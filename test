@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+    <!-- En-têtes, liens CSS et JS, titre -->
+</head>
+<body>
+Corps du texte
+<p>
+    paragraphe
+</p>
+
+<!--
+
+<a href="https://developer.mozilla.org" target="_blank" >MDN</a>
+
+<ul>
+  <li>first item</li>
+  <li>second item</li>
+  <li>third item</li>
+</ul>
+
+<img id="picture1" src="https://source.unsplash.com/1600x900/?nature,water" alt="random images of nature and water" data-auteur="Joe"/>>
+
+
+
+<details open>
+      <summary>Lorem ipsum</summary>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit ...
+</details>
+
+
+
+Cette formation vous est présentée par la <mark>HES-SO</mark>
+-->
+
+<!-- FORMULAIRES -->
+<!--
+<br>
+<input type="number" required min="10" step="5" placeholder="Saisir nombre >= 10"/>
+
+<input type="color"/>
+<input type="date"/>
+<input type="number"/>
+<input type="search"/>
+<input type="range"/>
+
+<form>
+      <label>Nom </label> <input type="text" name="name"/>
+
+      <label>Age </label> <input type="number" name="age" />
+
+      <label>Date de naissance : </label>
+      <input type="date" name="birthday" />
+
+      <label>E-mail : </label>
+      <input type= "email" name="email"/>
+
+      <label>Telephone : </label>
+      <input type="tel" name="tel"/>
+
+      <label>Site internet : </label>
+      <input type="url" name="site"/>
+
+      <label>Mot de passe : </label>
+      <input type="password" name="password"/>
+  </form>
+
+-->
+
+<!-- EXEMPLE DE VALIDATION PAR JS -->
+<!--
+<p>Enter a number and click OK:</p>
+
+<input id="id1" type="number" min="100" max="300">
+<button onclick="myFunction()">OK</button>
+
+<p>If the number is less than 100 or greater than 300, an error message will be displayed.</p>
+
+<p id="demo"></p>
+
+-->
+
+<!--
+<datalist id="pays">
+  <option value="France">
+  <option value="Chine">
+  <option value="Italie">
+  <option value="Gabon">
+  <option value="Pérou">
+</datalist>
+
+<input type="search" list="pays"/>
+
+-->
+
+<!--
+<form oninput="result.value = parseInt(a.value) + parseInt(b.value)">
+
+  <input type="number" name="a" value="0"/>
+  + <input type="number" name="b" value="0" />
+  = <output for="a b" name="result"/>
+</form>
+-->
+
+</body>
+</html>

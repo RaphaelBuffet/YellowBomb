@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:200,400,400i,700|Roboto+Slab:700');
 
-
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
 * body
 {
     margin: 0px ;
@@ -10,6 +14,19 @@
     background-image: url("../images/goudron.jpg");
     background-repeat: repeat;
 }
+/*Exemple pour sam de loan*/
+body > header>nav{
+    background-color: rgb(38,41,42);
+}
+/* laissde de la place*/
+ aside{
+        flex:1;
+        margin: 0 1.5%;
+        width: 23%;
+        height: 150px;
+    }
+/* fin de l'exemple.*/
+
 /* Tableau des scores  */
 * table
 {

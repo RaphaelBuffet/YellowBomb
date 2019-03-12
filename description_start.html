@@ -2,37 +2,34 @@
 <html>
 <head>
     <title>624-2 - HTML/CSS/JavaScript</title>
-    <meta charset="utf-8">s
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="ressources/css/style_start.css">
 </head>
 <body>
 
-<header >
-
+<header>
+    <h1>HES-SO Vs - 624-2 - HTML/CSS/JavaScript</h1>
     <nav>
-        <img class ="logoBomb" src="ressources/images/Punk_jaune.png">
-        <ul id="onglets" >
-            <li >
-                <h1 class ="title">Yellow bomb</h1>
+        <!-- Hamburger -->
+        <ul>
+            <li class="hamburger">
+                <img src="ressources/images/hamburger_icon.svg">
             </li>
-            <li class="ongletsLignes" >
+            <li class="active">
                 <a href="description_start.html">Description</a>
             </li>
-            <li class="ongletsLignes">
+            <li>
                 <a href="maquettes_start.html">Maquettes</a>
             </li>
-            <li class="ongletsLignes">
+            <li>
                 <a href="mockup_start.html">Mockup</a>
             </li>
-            <li class="ongletsLignes">
+            <li>
                 <a href="flux_start.html">Flux</a>
             </li>
-            <li class="ongletsLignes">
-                <a href="journal_de_bord_start.html">Journal de bord</a>
-            </li>
             <li>
-                <a href="hallOfFame.html">Halle of Fame</a>
+                <a href="journal_de_bord_start.html">Journal de bord</a>
             </li>
         </ul>
     </nav>
@@ -41,9 +38,10 @@
 <main>
     <!-- Début zone pour votre contenu -->
     <section id="articles">
-        <article>
+	<article>
             <header>
                 <h2>Description de Yellow Bomb</h2>
+				 <p>Par Jean Dupont le 5/02/2019 à 09:00</p>
             </header>
             <p>La France est en proie au chaos. Les gilets jaunes savent ce qu’ils veulent et ne reculeront devant rien pour obtenir gain de cause. Que veulent-ils ? Nous ne le savons pas vraiment, mais ils le veulent</p>
             <p>Et c’est au milieu de ce chaos que vous, Gabriel Martin, avez décidé d’intervenir, plus que jamais. Casseur au milieu de ces gilets jaunes passifs, vous atteindrez l’Elysée en faisant exploser un par un ces CRS corrompus. Bien que passifs, ces gilets jaunes passifs restent vos alliés, et vous accompagneront, prenez soin d’eux en ne les blessant pas.</p>
@@ -57,13 +55,13 @@
             <h3>Fiche signalétique</h3>
             <ul>
                 <li >
-                    <p><strong>Buffet Loan</strong>: Coordinatrice</p>
+                    <p><strong>Buffet Loan</strong>Responsable du projet , mini-jeux (evenement)</p>
                 </li>
                 <li>
-                    <p><strong>Buffet Raphaël</strong>: Responsable mini-jeu</p>
+                    <p><strong>Buffet Raphaël</strong>Developper mini-jeux (mouvement), Mokup site</p>
                 </li>
                 <li>
-                    <p><strong>Pinto Da Silva Samuel</strong>: Designer</p>
+                    <p><strong>Pinto Da Silva Samuel</strong>Designer (css , logos) , Mokup</p>
                 </li>
             </ul>
         </div>
@@ -72,7 +70,7 @@
 </main>
     
     <footer>
-        <img class="logoHES" src="ressources/images/logo.png">
+        <img id="logo" src="ressources/images/logo.png">
     </footer>
 
 </body>
