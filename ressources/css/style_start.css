@@ -5,188 +5,229 @@
     padding: 0;
     margin: 0;
 }
-* body
-{
-    margin: 0px ;
-    padding: 0 ;
-    text-align: center ;
-    font: 0.8em "Trebuchet MS", helvetica, sans-serif ;
-    background-image: url("../images/goudron.jpg");
-    background-repeat: repeat;
+
+body > header {
+    position: relative;
+    min-height: 150px;
+    margin:0 auto;
+    text-align: justify-all;
+    display: flex;
+    vertical-align: middle;
 }
-/*Exemple pour sam de loan*/
+
+body > header > h1 {
+    font-size:30px;
+    text-align:center;
+    width:100%;
+    background-image: linear-gradient(180deg, rgb(247,195,169) 0%, rgba(224,70,7,0.9)   100%);
+}
 body > header>nav{
     background-color: rgb(38,41,42);
 }
-/* laissde de la place*/
- aside{
-        flex:1;
-        margin: 0 1.5%;
-        width: 23%;
-        height: 150px;
-    }
-/* fin de l'exemple.*/
-
-/* Tableau des scores  */
-* table
-{
-    text-align: center ;
-    border: 1px solid #b6ff00
+body > header > nav > ul > li.active {
+    background: #ffffff;
 }
 
-/* block principal */
-* main
-{
-    width: 1388px ;
-    margin-left: 12px;
-    padding: 12px;
-    text-align: left ;
-    border: 12px solid #c3ff00 ;
-    background: #fff ;
+body > header > nav > ul > li.active > a {
+    color:rgba(224,70,7,0.9);
 }
-/* Bare de menu + titres*/
-ul#onglets {
-    width: 1412px ;
-    margin-top: 0;
-    margin-left: 12px ;
-    margin-bottom: 20px;
-    padding-bottom: 40px;
-    padding-right: 12px;
-    padding-top: 5px;
-    padding-left: 12px;
+
+body > footer {
+    left: 0;
+    bottom: 0;
+    background-color: rgb(38,41,42);
+    color: white;
+    text-align: center;
+    clear: both;
+    margin-bottom: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: auto;
+    max-width: 1240px;
+}
+body > header > nav {
+    font-size: 18px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+body > header > nav > ul{
     list-style-type: none;
-    background: #c3ff00;
-
 }
-/* Onglets */
-.ongletsLignes
-{
-    width: 255px;
-    float:left;
-    padding-left: 12px;
-    background: #D3D3D3;
+body > header > nav > ul > li > a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+}
+body > header > nav > ul > li.hamburger {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.8);
+    font-size: 24px;
+}
+
+body > header > nav > ul > li:not(.hamburger) {
+    list-style-type: none;
+    display: none;
+}
+
+
+
+body > main > section > article {
+}
+
+body > main > section > article> header>h2 {
+    margin-top: 15px;
+    border-bottom: 1px solid grey;
+}
+
+body > main > section > article > header > p {
+    color:grey;
+    font-style: italic;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+body > main > aside {
+    margin-top:10px;
+    border: solid 1px #555;
+    box-shadow:  0 0 20px  rgba(0,0,0,0.8);
+    -moz-box-shadow: 0 0 20px  rgba(0,0,0,0.8);
+    -webkit-box-shadow: 0 0 20px  rgba(0,0,0,0.7);
+    -o-box-shadow: 0 0 20px  rgba(0,0,0,0.6);
+}
+body > main > aside > div > ul {
+    list-style-type: none;
+}
+body > main > aside > div > h3 {
+    background-color: rgba(224,70,7,0.9);
+    color:white;
+    height: 30px;
+}
+body > main > aside > div > ul > li {
+    margin-left: 20px;
+    margin-top :10px;
+}
+body > main > aside > div > ul > li:last-child {
+    margin-bottom: 30px;
+}
+
+
+@media screen and (min-width: 768px) {
+    body > header > nav {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 0;
+        height: 30px;
+        align-items: center;
+    }
+
+    body > header > nav > ul  {
+        display: flex;
+        margin-right: 30px;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    body > header > nav > ul > li:not(.hamburger) {
+        margin: 0;
+    }
+
+    body > header > nav > ul > li:not(.hamburger) {
+        margin-left: 40px;
+        list-style-type: none;
+        display: block;
+    }
+
+    body > header > nav > ul > li.hamburger {
+        display: none;
+    }
+
+    body > header > nav > ul > li.hamburger:hover,
+    header > nav > ul > li:not(.hamburger) > a {
+        color: rgba(255, 255, 255, 1);
+    }
+
+    main {
+        display: flex;
+    }
+    section{
+        flex:3;
+        margin: 0 1.5%;
+        min-width: 70%;
+    }
+    aside{
+        flex:1;
+        width: 23%;
+        margin: 0 1.5% auto;
+    }
+}
+
+body > main > section > article > table {
+    border: 1px solid #D66A29;
+    background-color: #EEEEEE;
+    width: 100%;
     text-align: left;
-    margin: 0;
-    font-size: 25px;
-    display: inline;
-
+    border-collapse: collapse;
+}
+body > main > section > article > table td, body > main > section > article > table th {
+    border: 1px solid #AAAAAA;
+    padding: 3px 2px;
+}
+body > main > section > article > table tbody td {
+    font-size: 13px;
+    color: #000000;
+}
+body > main > section > article > table tr:nth-child(even) {
+    background: #EFC0A1;
+}
+body > main > section > article > table thead {
+    background: #D66A29;
+    background: -moz-linear-gradient(top, #e08f5e 0%, #da793e 66%, #D66A29 100%);
+    background: -webkit-linear-gradient(top, #e08f5e 0%, #da793e 66%, #D66A29 100%);
+    background: linear-gradient(to bottom, #e08f5e 0%, #da793e 66%, #D66A29 100%);
+    border-bottom: 2px solid #444444;
+}
+body > main > section > article > table thead th {
+    font-size: 15px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-left: 2px solid #D66A29;
+}
+body > main > section > article > table thead th:first-child {
+    border-left: none;
 }
 
-/* Titre */
-.title
-{
-    font-size: 40px;
-    text-align: left ;
+body > main > section > article > table tfoot {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #D6B7A4;
+    background: -moz-linear-gradient(top, #e0c9bb 0%, #dabead 66%, #D6B7A4 100%);
+    background: -webkit-linear-gradient(top, #e0c9bb 0%, #dabead 66%, #D6B7A4 100%);
+    background: linear-gradient(to bottom, #e0c9bb 0%, #dabead 66%, #D6B7A4 100%);
+    border-top: 2px solid #444444;
 }
-.logoHES
-{
-    float:right;
-    margin-top: 10px;
-    margin-right: 50px;
+body > main > section > article > table tfoot td {
+    font-size: 14px;
 }
-
-.logoBomb
-{
-    float:left;
-    margin-top:0;
-    margin-left: 12px;
-    width:85px;
-    vertical-align: top;
+body > main > section > article > table tfoot .links {
+    text-align: right;
 }
-
-h1#header
-{
-    height: 258px ;
-    margin: 0 ;
-    text-align: left ;
-    background: url(apple.jpg) no-repeat left top ;
+body > main > section > article > table tfoot .links a{
+    display: inline-block;
+    background: #D66A29;
+    color: #FFFFFF;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+/*Atteindre les images sans id*/
+footer > img:nth-of-type(1) {
 }
 
-h1#header a
-{
-    width: 400px ;
-    height: 70px ;
-    display: block ;
-    background: url(title.gif) no-repeat ;
-    position: relative ;
-    left: 350px ;
-    top: 15px ;
-    text-indent: -5000px ;
-}
-
-
-div#contenu
-{
-    padding: 0 25px 0 100px ;
-    background: url(bg_page.gif) no-repeat 15px 15px ;
-}
-
-div#contenu h2
-{
-    padding-left: 25px ;
-    line-height: 25px ;
-    font-size: 1.4em ;
-    background: url(little_apple.gif) no-repeat left bottom ;
-    color: #9b2 ;
-    border-bottom: 1px solid #9b2 ;
-}
-
-div#contenu h3
-{
-    margin-left: 15px ;
-    padding-left: 5px ;
-    border-bottom: 1px solid #9b2 ;
-    border-left: 3px solid #9b2 ;
-    color: #9b2 ;
-}
-
-div#contenu p
-{
-    text-align: justify ;
-    text-indent: 2em ;
-    line-height: 1.7em ;
-}
-
-div#contenu a
-{
-    color: #8a0 ;
-}
-
-div#contenu a:hover
-{
-    color: #9b2 ;
-}
-
-p#footer
-{
-    margin: 0 ;
-    padding-right: 10px ;
-    line-height: 30px ;
-    text-align: right ;
-    color: #8a0 ;
-}
-
-pre
-{
-    overflow: auto ;
-    background: #dea ;
-    border: 2px solid #9b2 ;
-    padding: 5px 0 0 5px ;
-    font-size: 1.2em ;
-}
-
-* html pre
-{
-    width: 636px ;
-}
-
-pre span
-{
-    color: #560 ;
-}
-
-pre span.comment
-{
-    color: #b30000 ;
+footer > img:nth-of-type(2) {
 }
 
