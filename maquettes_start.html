@@ -7,13 +7,9 @@
     <link rel="stylesheet" href="ressources/css/style_start.css">
 </head>
 <body>
-
 <header>
     <h1>HES-SO Vs - 624-2 - HTML/CSS/JavaScript</h1>
     <nav>
-        <!-- Hamburger -->
-        <label for="hamburger">&#9776;</label>
-        <input type="checkbox" id="hamburger"/>
         <ul>
             <!--<li class="hamburger">-->
                 <!--<img src="ressources/images/hamburger_icon.svg">-->
@@ -45,13 +41,26 @@
                 <h2>Maquette visuelle de votre projet</h2>
                 <p>Par Jean Dupont le 5/02/2019 à 09:00</p>
             </header>
-            <p>Monde 1</p>
+
+            <p>
+                Inspiré du célèbre jeu-vidéo Bomberman, notre jeu a pour thème les gilets jaunes. </br>
+                Le premier monde est tel quel que l'on peut le trouver dans les jeux-vidéos, les seconds ont été créés
+                par nous-mêmes. </br>
+                Le personnage principal, lui, est un gilet jaune punk. Nous avons décidé de le représenter ainsi car
+                c'est un casseur, donc un "méchant". Hors, dans les années où Bomberman est sorti, les punks étaient
+                perçus dans l'imaginaire collectifs comme des crapules.
+            </p>
+            <h3> Index des cases: </h3>
+            <img src="ressources/images/Index.JPG">
+            <p><h3>Monde 1</h3></p>
             <img src="ressources/images/Plateau1.JPG">
-            <p>Monde 2</p>
+            <p><h3>Monde 2</h3></p>
             <img src="ressources/images/Plateau2.JPG">
-            <p>Monde 3</p>
+            <p><h3>Monde 3</h3></p>
             <img src="ressources/images/Plateau3.JPG">
             <aside>
+                <h3> Protagoniste: Gabriel martin</h3>
+
                 <img src="ressources/images/Punk_jaune.png">
             </aside>
             <p>Le code source de l'application est disponible sur le <a href="https://github.com/">github du projet</a>.</p>
@@ -59,11 +68,18 @@
     </section>
     <!-- >Fin zone pour votre contenu -->
 </main>
-
 <footer>
-    <img id="logoBombe" src="ressources/images/logoBomb.png">
-    <img id="logoHES" src="ressources/images/logo.png">
+    <div>
+        <img id="logoBombe" src="ressources/images/logoBomb.png">
+    </div>
+    <div></div>
+    <div>
+        <img id="logoHES" src="ressources/images/logo.png">
+    </div>
 </footer>
+
+<script src="./scripts/hamburger.js"></script>
+
 
 </body>
 </html>
