@@ -1,198 +1,265 @@
-// Create the canvas
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
-canvas.width = 512;
-canvas.height = 480;
-document.body.appendChild(canvas);
-
-// Background image
-var bgReady = false;
-var bgImage = new Image();
-bgImage.onload = function () {
-	bgReady = true;
-};
-bgImage.src = "images/background.png";
-
-// Hero image
-var heroReady = false;
-var heroImage = new Image();
-heroImage.onload = function () {
-	heroReady = true;
-};
-heroImage.src = "images/hero.png";
-
-// Ennemy image
-var ennemy1Ready= false;
-var ennemy1Image = new Image();
-ennemy1Image.onload = function () {
-	ennemy1Ready = true;
-};
-EnnemyImage.src = "images/ennemy.png";
-
-// Ennemy image
-var ennemy2Ready= false;
-var ennemy2Image = new Image();
-ennemy2Image.onload = function () {
-	ennemy2Ready = true;
-};
-Ennemy2Image.src = "images/ennemy.png";
-
-// Boss image
-var bossReady= false;
-var bossImage = new Image();
-bossImage.onload = function () {
-	bossReady = true;
-};
-bossImage.src = "images/boss.png";
+// context
+var ctx = null;
+// hero's image
+const heroImage = new Image();
+heroImage.src = "ressources/images/gameImages/Punk_jaune.png";
+// unbreakable block image
+const buildingImage = new Image();
+buildingImage.src = "ressources/images/gameImages/building.png";
+// breakable block image
+const barrierImage = new Image();
+barrierImage.src = "ressources/images/gameImages/box.png";
+/*
+Maps:
+0. Contour de la map
+1. Chemin parcourable
+2. Murs cassables
+3. Murs incassables
+ */
+// Structure Map 1
+const gameMap1 = [
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0,
+	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 0,
+	0, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 0,
+	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 0,
+	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 0,
+	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 0,
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
 
 
-// Ally image
-var AllyReady= false;
-var AllyImage= new Image();
-AllyImage.onload = function () {
-	monsterReady = true;
-};
-AllyImage.src = "images/monster.png";
+const gameMap2 = [
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0,
+	0, 1, 3, 2, 3, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2, 3, 1, 1, 0,
+	0, 1, 2, 1, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 1, 0,
+	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 2, 3, 2, 3, 3, 2, 3, 2, 0,
+	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 2, 2, 3, 2, 2, 0,
+	0, 2, 2, 3, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 2, 3, 2, 2, 0,
+	0, 2, 2, 2, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 3, 2, 0,
+	0, 1, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 1, 0,
+	0, 1, 2, 2, 3, 3, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 1, 0,
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 1, 1, 1, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
 
-// Game objects
-var hero = {
-	speed: 256 // movement in pixels per second
+
+const gameMap3 = [
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0,
+	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 3, 0,
+	0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 0,
+	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 0,
+	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+	0, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 0,
+	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
+	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 1, 0,
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
+
+// choose of the map
+var gameMap = gameMap1;
+
+var tileW = 40, tileH = 40; // cases dimensions
+var mapW = 19, mapH = 13; // map dimensions
+
+// calcul of the FPS (calculable)
+var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
+
+// controls
+var keysDown = {
+	37 : false,
+	38 : false,
+	39 : false,
+	40 : false
 };
-var ennemy1= {
-	speed: 256 // movement in pixels per second
+
+var player = new Character();
+
+function Character()
+{
+	this.tileFrom	= [1,1];
+	this.tileTo		= [1,1];
+	this.timeMoved	= 0;
+	this.dimensions	= [30,30];
+	this.position	= [45,45];
+	this.delayMove	= 500;
+}
+
+// Placement of the character
+Character.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
 };
-var ennemy2= {
-	speed: 256 // movement in pixels per second
-};
-var boss= {
-	speed: 256 // movement in pixels per second
-};
-var ally = {
-	speed: 256 // movement in pixels per second
-};
-var bomb = {
-	// time before the bomb explose
-	var start=funtion(timer){
-		if(timer==0){
-		explosed();
+
+// Movement method (takes in parameter the current frameTime) --> where we are allowed to go
+Character.prototype.processMovement = function(t)
+{
+	// if we don't move
+	if(this.tileFrom[0]==this.tileTo[0] && this.tileFrom[1]==this.tileTo[1]) { return false; }
+
+	// if the current FrameTime is superior or equals of this delaysMove
+	if((t-this.timeMoved)>=this.delayMove)
+	{
+		this.placeAt(this.tileTo[0], this.tileTo[1]);
+	}
+	else
+	{
+		this.position[0] = (this.tileFrom[0] * tileW) + ((tileW-this.dimensions[0])/2);
+		this.position[1] = (this.tileFrom[1] * tileH) + ((tileH-this.dimensions[1])/2);
+
+		if(this.tileTo[0] != this.tileFrom[0])
+		{
+			var diff = (tileW / this.delayMove) * (t-this.timeMoved);
+			this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
 		}
-	};
-};
-var score=0;
+		if(this.tileTo[1] != this.tileFrom[1])
+		{
+			var diff = (tileH / this.delayMove) * (t-this.timeMoved);
+			this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
+		}
 
-// Handle keyboard controls
-var keysDown = {};
-
-addEventListener("keydown", function (e) { //action onclick of the keayboard
-	keysDown[e.keyCode] = true;
-    console.log(keysDown);
-}, false);
-
-addEventListener("keyup", function (e) { //action when stop to click on keyboard
-	delete keysDown[e.keyCode];
-}, false);
-
-var begin = function () {
-	// the hero begin on the top left
-	hero.x = 32;
-	hero.y = 32; 
-
-	// put down the ennemy on the map top right
-	ennemy1.x= canvas.width - 32
-	ennemy1.y= 32
-
-	// put down the ennemy on the map bottom left
-	ennemy2.x= 32
-	ennemy2.y= canvas.height - 32
-
-	// put down the boss on the map bottom right
-	boss.x= canvas.width - 32
-	boss.y= canvas.height - 32
-
-	// put down the ally on the map center horizontal and vertical
-	ally.x = canvas.width / 2;
-	ally.y = canvas.height / 2;
-
-};
-var explosed = function () {
-	if(hero.x==bomb.x && hero.y==bom.y || hero.x+32==bomb.x && hero.y==bomb.y ||hero.x-32==bomb.x && hero.y==bomb.y ||hero.x==bomb.x && hero.y+32==bomb.y ||hero.x==bomb.x && hero.y-32==bomb.y){
-	begin(); //restart the game and it s the game over
-	}
-	if(ennemy1.x==bomb.x && ennemy1.y==bom.y ||ennemy1.x+32==bomb.x && ennemy1.y==bomb.y ||ennemy1.x-32==bomb.x && ennemy1.y==bomb.y ||ennemy1.x==bomb.x && ennemy1.y+32==bomb.y ||ennemy1.x==bomb.x && ennemy1.y-32==bomb.y){
-	score+=1000
-	}
-	if(ennemy2.x==bomb.x && ennemy2.y==bom.y ||ennemy2.x+32==bomb.x && ennemy2.y==bomb.y ||ennemy2.x-32==bomb.x && ennemy2.y==bomb.y ||ennemy2.x==bomb.x && ennemy2.y+32==bomb.y ||ennemy2.x==bomb.x && ennemy2.y-32==bomb.y){
-	score+=2000
-	}
-	if(boss.x==bomb.x && boss.y==bom.y ||boss.x+32==bomb.x && boss.y==bomb.y ||boss.x-32==bomb.x && boss.y==bomb.y ||boss.x==bomb.x && boss.y+32==bomb.y ||boss.x==bomb.x && boss.y-32==bomb.y){
-	score+=10000
-	}
-	if(ally.x==bomb.x && ally.y==bom.y ||ally.x+32==bomb.x && ally.y==bomb.y ||ally.x-32==bomb.x && ally.y==bomb.y ||ally.x==bomb.x && ally.y+32==bomb.y ||ally.x==bomb.x && ally.y-32==bomb.y){
-	score-=5000
-	}
-};
-var update = function (modifier) {
-	if (38 in keysDown) { // Player move up
-		hero.y -= hero.speed * modifier;
-	}
-	if (40 in keysDown) { // Player move down
-		hero.y += hero.speed * modifier;
-	}
-	if (37 in keysDown) { // Player move left
-		hero.x -= hero.speed * modifier;
-	}
-	if (39 in keysDown) { // Player move right
-		hero.x += hero.speed * modifier;
-	}
-	if (32 in keysDown) { // Player put a bomb
-		bomb.x=hero.x;
-		bomb.y=hero.y;
-		bomb.start(4);// time before the bomb explosed
+		this.position[0] = Math.round(this.position[0]);
+		this.position[1] = Math.round(this.position[1]);
 	}
 
-// Draw everything
-var render = function () {
-	if (bgReady) {
-		ctx.drawImage(bgImage, 0, 0);
-	}
-
-	if (heroReady) {
-		ctx.drawImage(heroImage, hero.x, hero.y);
-	}
-
-	if (ennemy1Ready) {
-		ctx.drawImage(ennemy1Image, ennemy1.x, ennemy1.y);
-	}
-	if (ennemy2Ready) {
-		ctx.drawImage(ennemy2Image, ennemy2.x, ennemy2.y);
-	}
-	if (bossReady) {
-		ctx.drawImage(bossImage, boss.x, boss.y);
-	}
-	if (allyReady) {
-		ctx.drawImage(allyImage, ally.x, ally.y);
-	}
-
-	// Score
-	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "24px Helvetica";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText("Score: " + score, 32, 32);
+	return true;
 };
 
-// The main game loop
-var main = function () {
-	var now = Date.now();
-	var delta = now - then;
+function toIndex(x, y)
+{
+	return((y * mapW) + x);
+}
 
-	update(delta / 1000);
-    //console.log(delta);
-	render();
+window.onload = function()
+{
+	ctx = document.getElementById('game').getContext("2d");
+	requestAnimationFrame(drawGame);
+	ctx.font = "bold 10pt sans-serif";
 
-	then = now;
+	window.addEventListener("keydown", function(e) {
+		if(e.keyCode>=37 && e.keyCode<=40) { keysDown[e.keyCode] = true; }
 
-	// Request to do this again ASAP
-	requestAnimationFrame(main);
+		// stopper la propagation
+		if( e.preventDefault){
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		else{
+			e.returnValue = false;
+			e.cancelBubble = true;
+		}
+	});
+	window.addEventListener("keyup", function(e) {
+		if(e.keyCode>=37 && e.keyCode<=40) { keysDown[e.keyCode] = false; }
+		// stopper la propagation
+		if( e.preventDefault){
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		else{
+			e.returnValue = false;
+			e.cancelBubble = true;
+		}
+	});
+
+
 };
 
+function drawGame()
+{
+	if(ctx==null) { return; }
+
+	var currentFrameTime = Date.now();
+	var timeElapsed = currentFrameTime - lastFrameTime;
+
+	var sec = Math.floor(Date.now()/1000);
+	if(sec!=currentSecond)
+	{
+		currentSecond = sec;
+		framesLastSecond = frameCount;
+		frameCount = 1;
+	}
+	else { frameCount++; }
+
+	// Movement controls --> based on processMovement
+	if(!player.processMovement(currentFrameTime))
+	{
+		if(     keysDown[38] &&
+			player.tileFrom[1]>0 &&
+			gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]==1)
+		{ player.tileTo[1]-= 1; }
+		else if(keysDown[40] &&
+			player.tileFrom[1]<(mapH-1) &&
+			gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]==1)
+		{ player.tileTo[1]+= 1; }
+		else if(keysDown[37] &&
+			player.tileFrom[0]>0 &&
+			gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]==1)
+		{ player.tileTo[0]-= 1; }
+		else if(keysDown[39] &&
+			player.tileFrom[0]<(mapW-1) &&
+			gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]==1)
+		{ player.tileTo[0]+= 1; }
+
+		if(     player.tileFrom[0]!=player.tileTo[0] || player.tileFrom[1]!=player.tileTo[1])
+		{ player.timeMoved = currentFrameTime; }
+
+
+	}
+
+	// Define the colors/sprites of the blocks
+	for(var y = 0; y < mapH; ++y)
+	{
+		for(var x = 0; x < mapW; ++x)
+		{
+			switch(gameMap[((y*mapW)+x)])
+			{
+				case 0:
+					ctx.fillStyle = "#302020"; // brun foncé (tour de la map)
+					break;
+				case 1:
+					ctx.fillStyle = "#6c6d70"; // gris (chemin parcourable)
+					break;
+				case 2:
+					//ctx.fillStyle = "#9C7B43"; // brun clair (mur cassable)
+					ctx.fillStyle = "rgba(255, 255, 255, 0)"; // gris foncé (murs incassables)
+					ctx.drawImage(barrierImage, x*tileW, y*tileH, barrierImage.width/15.75, barrierImage.height/15.75);
+					ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+					break;
+				case 3:
+					ctx.fillStyle = "rgba(255, 255, 255, 0)"; // gris foncé (murs incassables)
+					ctx.drawImage(buildingImage, x*tileW, y*tileH, buildingImage.width/4.075, buildingImage.height/4.175);
+					ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+					break;
+			}
+			ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+		}
+	}
+	ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+	// Draw the sprite of the hero
+	ctx.drawImage(heroImage, player.position[0], player.position[1], heroImage.width/9, heroImage.height/15);
+	ctx.fillRect(   player.position[0], player.position[1],
+		player.dimensions[0], player.dimensions[1]);
+
+	// Background by default : red
+	ctx.fillStyle = "#ff0000";
+	ctx.fillText("FPS: " + framesLastSecond, 10, 20);
+
+	lastFrameTime = currentFrameTime;
+	requestAnimationFrame(drawGame);
+}
