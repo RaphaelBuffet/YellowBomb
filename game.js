@@ -10,6 +10,9 @@ buildingImage.src = "ressources/images/gameImages/building.png";
 const barrierImage = new Image();
 barrierImage.src = "ressources/images/gameImages/box.png";
 
+var playerName;
+//var playerNameSelection = prompt("Please, choose a player name", "",);
+
 const bombImage = [new Image(), new Image(), new Image(), new Image()];
 const explosionImage = [new Image(), new Image(), new Image()];
 bombImage[0].src = "ressources/images/gameImages/bomb0.png";
@@ -162,6 +165,14 @@ Character.prototype.processMovement = function(t)
 
 	return true;
 };
+
+function playerNameSelection()
+{
+	playerName = prompt('Veuillez choisir un nom de joueur');
+	if (playerName !== null) {
+		return playerName; //break out of the function early
+	}
+}
 
 //prépare l'explosion (loan)
 function startExplosion(x,y) {
@@ -365,8 +376,7 @@ function drawGame()
 
 	}
 
-
-
+	playerNameSelection();
 	// Define the colors/sprites of the blocks
 	for(var y = 0; y < mapH; ++y)
 	{
@@ -422,8 +432,10 @@ function drawGame()
 							 player.dimensions[0], player.dimensions[1]);
 
 	// Background by default : red
-	ctx.fillStyle = "#ff0000";
-	ctx.fillText("FPS: " + framesLastSecond, 10, 20);
+
+	ctx.fillStyle = "#00ff24";
+	ctx.font = "25px arial";
+	ctx.fillText("Joueur: " + playerName, 10, 20);
 
 	lastFrameTime = currentFrameTime;
 	requestAnimationFrame(drawGame);
