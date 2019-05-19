@@ -166,11 +166,15 @@ Character.prototype.processMovement = function(t)
 	return true;
 };
 
+// Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
 {
-	playerName = prompt('Veuillez choisir un nom de joueur');
-	if (playerName !== null) {
-		return playerName; //break out of the function early
+	playerName = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
+	if (playerName != null) { // s'il n'est pas null
+		// on affiche le nom du joueur sur la page
+		document.getElementById("playerName").innerHTML = "Joueur: " + playerName;
+		document.getElementById("playerName").style.color = "#7bff00";
+		document.getElementById("playerName").style.background = "#302020";
 	}
 }
 
@@ -376,8 +380,8 @@ function drawGame()
 
 	}
 
-	playerNameSelection();
 	// Define the colors/sprites of the blocks
+
 	for(var y = 0; y < mapH; ++y)
 	{
 		for(var x = 0; x < mapW; ++x)
@@ -433,9 +437,9 @@ function drawGame()
 
 	// Background by default : red
 
-	ctx.fillStyle = "#00ff24";
+	/*ctx.fillStyle = "#00ff24";
 	ctx.font = "25px arial";
-	ctx.fillText("Joueur: " + playerName, 10, 20);
+	ctx.fillText("Joueur: " + playerName, 10, 20);*/
 
 	lastFrameTime = currentFrameTime;
 	requestAnimationFrame(drawGame);
