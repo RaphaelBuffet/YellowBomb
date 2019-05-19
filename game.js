@@ -120,7 +120,7 @@ function Character()
 	this.dimensions	= [tileW-20,tileH-20];
 	this.position	= [tileW+10,tileH+10];
 	this.delayMove	= 200;
-	this.bomb = {power:1, number:0, maxNumber:5};
+	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion
 }
 
 // Placement of the character
