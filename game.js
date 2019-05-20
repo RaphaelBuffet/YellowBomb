@@ -10,6 +10,12 @@ buildingImage.src = "ressources/images/gameImages/building.png";
 const barrierImage = new Image();
 barrierImage.src = "ressources/images/gameImages/box.png";
 
+const EnnemyImage = new Image();
+EnnemyImage.src = "ressources/images/gameImages/CRS.png";
+
+const AllyImage = new Image();
+AllyImage.src = "ressources/images/gameImages/ally.png";
+
 var playerName;
 //var playerNameSelection = prompt("Please, choose a player name", "",);
 
@@ -110,6 +116,8 @@ var keysDown = {
 };
 
 var player = new Character();
+var ennemy = new Ennemy();
+var ally = new Ally();
 
 playerNameSelection();
 
@@ -124,9 +132,34 @@ function Character()
 	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
 	this.score = 0;
 }
+function Ennemy()
+{
+	this.tileFrom	= [1,1];
+	this.tileTo		= [1,1];
+	this.timeMoved	= 0;
+	this.dimensions	= [tileW-20,tileH-20];
+	this.position	= [tileW+20,tileH+10];
+	this.delayMove	= 200;
+}
+
+function Ally()
+{
+	this.tileFrom	= [1,1];
+	this.tileTo		= [1,1];
+	this.timeMoved	= 0;
+	this.dimensions	= [tileW-20,tileH-20];
+	this.position	= [tileW+20,tileH+10];
+}
 
 // Placement of the character
 Character.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+};
+Ennemy.prototype.placeAt = function(x, y)
 {
 	this.tileFrom	= [x,y];
 	this.tileTo		= [x,y];
@@ -167,6 +200,7 @@ Character.prototype.processMovement = function(t)
 
 	return true;
 };
+
 
 // Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
@@ -226,6 +260,8 @@ function startExplosion(x,y) {
 		gameMap[bombPosition] = SPRITE.explosion0; // on remplace le sprite de la bombe par l'explosion
 		explosionPosition.push(bombPosition); //dit qu'on a modif le terrain
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
+		checkEnnemy(bombPosition);
+		checkAlly(bombPosition);
 		let pos = {};
 
 		for (let i = 1; i <= this.player.bomb.power; i++) {
@@ -257,6 +293,20 @@ function startExplosion(x,y) {
 			{
 				// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
 				console.log("Player Dead");
+			}
+		}
+
+		function checkEnnemy(number) {
+			if(this.ennemy.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+			{
+				player.score+=1000;
+			}
+		}
+
+		function checkAlly(number) {
+			if(this.ally.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+			{
+				player.score-=1500;
 			}
 		}
 
@@ -376,11 +426,13 @@ function drawGame()
 			 player.tileFrom[1]>0 &&
 			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
 			player.tileTo[1]-= 1;
+			ennemy.tileTo[1]+=1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
 						gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
 			player.tileTo[1]+= 1;
+			ennemy.tileTo[1]-=1;
 		}
 		else if(keysDown[37] &&
 						player.tileFrom[0]>0 &&
@@ -400,7 +452,6 @@ function drawGame()
 
 		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
 		{ player.timeMoved = currentFrameTime; }
-
 
 	}
 
@@ -458,6 +509,16 @@ function drawGame()
 	ctx.drawImage(heroImage, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
+
+	ctx.drawImage(EnnemyImage, ennemy.position[0], ennemy.position[1], ennemy.dimensions[0], ennemy.dimensions[1]);
+	ctx.fillRect(ennemy.position[0], ennemy.position[1],
+		ennemy.dimensions[0], ennemy.dimensions[1]);
+
+	ctx.drawImage(AllyImage, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
+	ctx.fillRect(ally.position[0], ally.position[1],
+		ally.dimensions[0], ally.dimensions[1]);
+
+
 	ctx.font = "20px Comic Sans MS";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
