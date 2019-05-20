@@ -113,6 +113,29 @@ var player = new Character();
 
 playerNameSelection();
 
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition((coord) =>{
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			// test du statut de retour de la requête AJAX
+			if (xhttp.readyState == 4 && (xhttp.status == 200 || xhttp.status == 0)) {
+				// on désérialise le catalogue et on le sauvegarde dans une variable
+				let country = JSON.parse(xhttp.responseText);
+				player.country.name = country.countryName;
+				player.country.code = country.countryCode;
+			}
+		};
+		xhttp.open("GET", `http://api.geonames.org/countryCodeJSON?lat=${coord.coords.latitude}&lng=${coord.coords.longitude}&username=demo`, true);
+		xhttp.send();
+
+
+
+	}, (fail)=> {
+
+	});
+}
+
+
 function Character()
 {
 	this.tileFrom	= [1,1];
@@ -123,6 +146,7 @@ function Character()
 	this.delayMove	= 200;
 	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
 	this.score = 0;
+	this.country = {}
 }
 
 // Placement of the character
@@ -255,9 +279,35 @@ function startExplosion(x,y) {
 		function checkPlayer(number) {
 			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
 			{
-				// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
-				console.log("Player Dead");
+				recordScore();
 			}
+		}
+
+		function recordScore(){
+			// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
+			let score = localStorage.getItem("score");
+			if(!score)
+			{
+				score = [];
+			}
+			else
+			{
+				score = JSON.parse(score); //conversion le json en objet pour le local
+			}
+			score.push({
+				name: playerName,
+				score: player.score,
+				country: "CH",
+				date: new Date(),
+				country: {
+					name: player.country.name,
+					code: player.country.code
+				}
+
+			});
+			console.log(JSON.stringify(score));
+			localStorage.setItem("score", JSON.stringify(score));
+			console.log("Player Dead");
 		}
 
 		//Suivant ce que touche l'explosion (loan)
