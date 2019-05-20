@@ -1,7 +1,7 @@
 // context
 var ctx = null;
 // hero's image
-const heroImage = new Image();
+var heroImage = new Image();
 heroImage.src = "ressources/images/gameImages/Punk_jaune.png";
 // unbreakable block image
 const buildingImage = new Image();
@@ -11,7 +11,6 @@ const barrierImage = new Image();
 barrierImage.src = "ressources/images/gameImages/box.png";
 
 var playerName;
-//var playerNameSelection = prompt("Please, choose a player name", "",);
 
 const bombImage = [new Image(), new Image(), new Image(), new Image()];
 const explosionImage = [new Image(), new Image(), new Image()];
@@ -110,7 +109,26 @@ var keysDown = {
 	40 : false
 };
 
+function allowDrop(ev) {
+	ev.preventDefault();
+}
+
+function drag(ev) {
+	ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+	ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	ev.target.appendChild(document.getElementById(data));
+	if(ev.dataTransfer.items !== null)
+	{
+		document.getElementById("avatars").hidden = true;
+		heroImage = ev.dataTransfer.items.item(1);
+	}
+}
 var player = new Character();
+
 
 function Character()
 {
@@ -251,6 +269,8 @@ function startExplosion(x,y) {
 		function checkPlayer(number) {
 			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number){
 				console.log("Player Dead");
+				heroImage.src = "ressources/images/gameImages/Mort.png";
+
 			}
 		}
 
@@ -329,66 +349,61 @@ window.onload = function()
 
 };
 
-function drawGame()
-{
-	if(ctx==null) { return; }
+function drawGame() {
+	if (ctx == null) {
+		return;
+	}
 
 	var currentFrameTime = Date.now();
 	var timeElapsed = currentFrameTime - lastFrameTime;
 
-	var sec = Math.floor(Date.now()/1000);
-	if(sec!=currentSecond)
-	{
+	var sec = Math.floor(Date.now() / 1000);
+	if (sec != currentSecond) {
 		currentSecond = sec;
 		framesLastSecond = frameCount;
 		frameCount = 1;
+	} else {
+		frameCount++;
 	}
-	else { frameCount++; }
 
 	// Movement controls --> based on processMovement
-	if(!player.processMovement(currentFrameTime))
-	{
-		if(keysDown[38] &&
-			 player.tileFrom[1]>0 &&
-			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
-			player.tileTo[1]-= 1;
-		}
-		else if(keysDown[40] &&
-						player.tileFrom[1]<(mapH-1) &&
-						gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
-			player.tileTo[1]+= 1;
-		}
-		else if(keysDown[37] &&
-						player.tileFrom[0]>0 &&
-						gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]===1) {
-			player.tileTo[0]-= 1;
-		}
-		else if(keysDown[39] &&
-						player.tileFrom[0]<(mapW-1) &&
-						gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1) {
-			player.tileTo[0]+= 1;
+	if (!player.processMovement(currentFrameTime)) {
+		if (keysDown[38] &&
+			player.tileFrom[1] > 0 &&
+			gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] - 1)] === 1) {
+			player.tileTo[1] -= 1;
+		} else if (keysDown[40] &&
+			player.tileFrom[1] < (mapH - 1) &&
+			gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] + 1)] === 1) {
+			player.tileTo[1] += 1;
+		} else if (keysDown[37] &&
+			player.tileFrom[0] > 0 &&
+			gameMap[toIndex(player.tileFrom[0] - 1, player.tileFrom[1])] === 1) {
+			player.tileTo[0] -= 1;
+		} else if (keysDown[39] &&
+			player.tileFrom[0] < (mapW - 1) &&
+			gameMap[toIndex(player.tileFrom[0] + 1, player.tileFrom[1])] === 1) {
+			player.tileTo[0] += 1;
 		}
 		//Si l'espace est appuier (loan)
-		else if(keysDown[32]){
-		player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
-		keysDown[32] = false;
-	}
+		else if (keysDown[32]) {
+			player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
+			keysDown[32] = false;
+		}
 
-		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
-		{ player.timeMoved = currentFrameTime; }
+		if (player.tileFrom[0] !== player.tileTo[0] || player.tileFrom[1] !== player.tileTo[1]) {
+			player.timeMoved = currentFrameTime;
+		}
 
 
 	}
 
 	// Define the colors/sprites of the blocks
 
-	for(var y = 0; y < mapH; ++y)
-	{
-		for(var x = 0; x < mapW; ++x)
-		{
-			let number = gameMap[((y*mapW)+x)];
-			switch(number)
-			{
+	for (var y = 0; y < mapH; ++y) {
+		for (var x = 0; x < mapW; ++x) {
+			let number = gameMap[((y * mapW) + x)];
+			switch (number) {
 				case 0:
 					ctx.fillStyle = "#302020"; // brun foncé (tour de la map)
 					break;
@@ -398,34 +413,32 @@ function drawGame()
 				case 2:
 					//ctx.fillStyle = "#9C7B43"; // brun clair (mur cassable)
 					ctx.fillStyle = "rgba(255, 255, 255, 0)"; // gris foncé (murs incassables)
-					ctx.drawImage(barrierImage, x*tileW, y*tileH, tileW, tileH);
-					ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+					ctx.drawImage(barrierImage, x * tileW, y * tileH, tileW, tileH);
+					ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
 					break;
 				case 3:
 					ctx.fillStyle = "rgba(255, 255, 255, 0)"; // gris foncé (murs incassables)
-					ctx.drawImage(buildingImage, x*tileW, y*tileH, tileW, tileH);
-					ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+					ctx.drawImage(buildingImage, x * tileW, y * tileH, tileW, tileH);
+					ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
 					break;
 				/*BOMB*/
 				default:
-					if(number > 3 && number <= 10){
+					if (number > 3 && number <= 10) {
 						let img;
-						if(number < 8)
-						{
+						if (number < 8) {
 							img = bombImage;
-							number-=4;
-						}
-						else {
+							number -= 4;
+						} else {
 							img = explosionImage;
-							number -=8;
+							number -= 8;
 						}
 						ctx.fillStyle = "rgba(255, 255, 255, 0)";
-						ctx.drawImage(img[number], x*tileW, y*tileH, tileW, tileH);
-						ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+						ctx.drawImage(img[number], x * tileW, y * tileH, tileW, tileH);
+						ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
 					}
 			}
 
-			ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
+			ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
 		}
 	}
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
@@ -433,7 +446,7 @@ function drawGame()
 	// Draw the sprite of the hero
 	ctx.drawImage(heroImage, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
-							 player.dimensions[0], player.dimensions[1]);
+		player.dimensions[0], player.dimensions[1]);
 
 	// Background by default : red
 

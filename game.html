@@ -37,7 +37,14 @@
     </nav>
 </header>
 
-<p id="playerName"></p>
+<div id="gameZone">
+    <div id="avatarZone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <div id="playerName"></div>
+    <div id="avatars">
+        <img id="avatar1" src="ressources/images/gameImages/Punk_jaune.png" draggable="true" ondragstart="drag(event)"/>
+        <img id="avatar2" src="ressources/images/gameImages/Punkette_jaune.png" draggable="true" ondragstart="drag(event)"/>
+    </div>
+</div>
 <main>
     <script src="game.js"></script>
     <script> playerNameSelection()</script>
