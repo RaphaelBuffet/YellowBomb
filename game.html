@@ -37,6 +37,7 @@
     </nav>
 </header>
 
+<!-- Zone d'affichage du nom du joueur et de séleciton de son avatar (Sam) -->
 <div id="gameZone">
     <div id="avatarZone" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
     <div id="playerName"></div>
@@ -45,9 +46,10 @@
         <img id="avatar2" src="ressources/images/gameImages/Punkette_jaune.png" draggable="true" ondragstart="drag(event)"/>
     </div>
 </div>
+
 <main>
     <script src="game.js"></script>
-    <script> playerNameSelection()</script>
+    <script> playerNameSelection()</script>  <!-- lancement du prompt pour la sélection du nom de joueur -->
     <canvas id="game" width="1240" height="806"></canvas>
 </main>
 

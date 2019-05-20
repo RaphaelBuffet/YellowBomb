@@ -109,6 +109,7 @@ var keysDown = {
 	40 : false
 };
 
+// Méthodes de drag and drop (Sam) -- début
 function allowDrop(ev) {
 	ev.preventDefault();
 }
@@ -127,6 +128,8 @@ function drop(ev) {
 		heroImage = ev.dataTransfer.items.item(1);
 	}
 }
+// Méthodes de drag and drop (Sam) -- Fin
+
 var player = new Character();
 
 
