@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+    <title>624-2 - HTML/CSS/JavaScript</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="ressources/css/style_start.css">
+</head>
+<body>
+<header>
+    <h1>HES-SO Vs - 624-2 - HTML/CSS/JavaScript</h1>
+    <nav>
+        <ul>
+            <li class="hamburger">
+                <img src="ressources/images/hamburger_icon.svg" >
+            </li>
+            <li class="active">
+                <a href="description_start.html">Description</a>
+            </li>
+            <li>
+                <a href="game.html">Jeu</a>
+            </li>
+            <li>
+                <a href="maquettes_start.html">Maquettes</a>
+            </li>
+            <li>
+                <a href="mockup_start.html">Mockup</a>
+            </li>
+            <li>
+                <a href="flux_start.html">Flux</a>
+            </li>
+            <li>
+                <a href="journal_de_bord_start.html">Journal de bord</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Début zone pour votre contenu -->
+    <section id="articles">
+	    <article>
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            Nom
+                        </td>
+                        <td>
+                            Score
+                        </td>
+                        <td>
+                            Pays
+                        </td>
+                        <td>
+                            Date
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="scoreBoard">
+                </tbody>
+            </table>
+        </article>
+    </section>
+
+
+    <script>
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            // test du statut de retour de la requête AJAX
+            if (xhttp.readyState == 4 && (xhttp.status == 200 || xhttp.status == 0)) {
+                // on désérialise le catalogue et on le sauvegarde dans une variable
+                let score = JSON.parse(xhttp.responseText);
+                score.sort(function(a,b){
+                    return b.score - a.score;
+                });
+            }
+        };
+        xhttp.open("GET", "./score.json", true);
+        xhttp.send();
+    </script>
+</main>
+
+<footer>
+    <div>
+    <img id="logoBombe" src="ressources/images/logoBomb.png">
+    </div>
+    <div></div>
+    <div>
+    <img id="logoHES" src="ressources/images/logo.png">
+    </div>
+</footer>
+
+<script src="./scripts/hamburger.js"></script>
+
+</body>
+</html>

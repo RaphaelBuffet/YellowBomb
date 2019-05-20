@@ -13,12 +13,12 @@ barrierImage.src = "ressources/images/gameImages/box.png";
 var playerName;
 //var playerNameSelection = prompt("Please, choose a player name", "",);
 
-const bombImage = [new Image(), new Image(), new Image(), new Image()];
+const bombImage = [new Image(), new Image(), new Image() ];
 const explosionImage = [new Image(), new Image(), new Image()];
 bombImage[0].src = "ressources/images/gameImages/bomb0.png";
 bombImage[1].src = "ressources/images/gameImages/bomb1.png";
 bombImage[2].src = "ressources/images/gameImages/bomb2.png";
-bombImage[3].src = "ressources/images/gameImages/bomb3.png";
+//bombImage[3].src = "ressources/images/gameImages/bomb3.png"; il était trop noir
 explosionImage[0].src = "ressources/images/gameImages/explosion0.png";
 explosionImage[1].src = "ressources/images/gameImages/explosion1.png";
 explosionImage[2].src = "ressources/images/gameImages/explosion2.png";
@@ -31,7 +31,6 @@ const SPRITE = {
 	bomb0:4,
 	bomb1:5,
 	bomb2:6,
-	bomb3:7,
 	explosion0:8,
 	explosion1:9,
 	explosion2:10
@@ -112,6 +111,8 @@ var keysDown = {
 
 var player = new Character();
 
+playerNameSelection();
+
 function Character()
 {
 	this.tileFrom	= [1,1];
@@ -120,7 +121,8 @@ function Character()
 	this.dimensions	= [tileW-20,tileH-20];
 	this.position	= [tileW+10,tileH+10];
 	this.delayMove	= 200;
-	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion
+	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
+	this.score = 0;
 }
 
 // Placement of the character
@@ -181,7 +183,7 @@ function playerNameSelection()
 //prépare l'explosion (loan)
 function startExplosion(x,y) {
 	let boom = false;
-	let timeExplosion = 2000; // temps d'explosion en ms (ex 2000 = 2 s) (loan)
+	let timeExplosion = 3000; // temps d'explosion en ms (ex 2000 = 2 s) (loan)
 	let minChange = 100; // delay min d'un changement d'image pour la bombe
 
 	setTimeout(function ()
@@ -204,11 +206,13 @@ function startExplosion(x,y) {
 	function countdown(cnt, x, y) {
 		if (!boom) {
 			//modifie le tableau , on posution la bomb
-			gameMap[((y * mapW) + x)] = (cnt % bombImage.length) + SPRITE.bomb0;
-			let time = timeExplosion / (4 * (cnt+1));
-			setTimeout(() => {
-				countdown(cnt + 1, x, y)
-			}, time < minChange ? minChange : time);
+			if(cnt < bombImage.length) {
+				gameMap[((y * mapW) + x)] = cnt + SPRITE.bomb0;
+				let time = timeExplosion / (bombImage.length);
+				setTimeout(() => {
+					countdown(cnt + 1, x, y)
+				}, time < minChange ? minChange : time);
+			}
 		} else {
 			explosion(x, y);
 		}
@@ -249,31 +253,51 @@ function startExplosion(x,y) {
 		}, 1000);
 
 		function checkPlayer(number) {
-			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number){
+			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+			{
+				// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
 				console.log("Player Dead");
 			}
 		}
 
-		function extracted(thePos, sprite, isLastSprite) {
-			if(!stop[thePos]) {
-				if ((gameMap[pos[thePos]] === SPRITE.breakableWall || (gameMap[pos[thePos]] === SPRITE.emptyGround && isLastSprite))) {
-					doExplosion(pos[thePos], SPRITE.explosion2, true);
-					checkPlayer(pos[thePos]);
+		//Suivant ce que touche l'explosion (loan)
+		function extracted(direction, sprite, isLastSprite)
+		{
+			if(gameMap[pos[direction]] === SPRITE.delimitation || gameMap[pos[direction]] === SPRITE.unbreakableWall)
+			{
+				stop[direction] = true;
+			}
+			else if(!stop[direction])
+			{
+				if(gameMap[pos[direction]] === SPRITE.breakableWall)
+				{
+					player.score+= 73;
+					doExplosion(pos[direction], SPRITE.explosion2);
+					checkPlayer(pos[direction]);
+					stop[direction] = true;
 				}
-				else if (gameMap[pos[thePos]] === SPRITE.emptyGround) {
-					doExplosion(pos[thePos], sprite, isLastSprite);
-					checkPlayer(pos[thePos]);
+				else if ((gameMap[pos[direction]] === SPRITE.emptyGround ))
+				{
+					if(isLastSprite)
+					{
+						doExplosion(pos[direction], SPRITE.explosion2);
+						checkPlayer(pos[direction]);
+						stop[direction] = true;
+					}
+					else
+					{
+						doExplosion(pos[direction], sprite);
+						checkPlayer(pos[direction]);
+					}
 				}
-			} // else pour l'optimisation.
-			else if(gameMap[pos[thePos]] === SPRITE.delimitation || gameMap[pos[thePos]] === SPRITE.unbreakableWall){
-				stop[thePos] = true;
 			}
 		}
 
-		function doExplosion(position, sprt, status) {
+		function doExplosion(position, sprt)
+		{
+			console.log("position" + position + "sprt " + sprt);
 			gameMap[position] = sprt;
 			explosionPosition.push(position);
-			stop[position] = status;
 		}
 	}
 }
@@ -434,6 +458,10 @@ function drawGame()
 	ctx.drawImage(heroImage, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
+	ctx.font = "20px Comic Sans MS";
+	ctx.textAlign = "right";
+	ctx.fillStyle = "red";
+	ctx.fillText(player.score, (this.tileW*this.mapW)-(tileW/2), 20);
 
 	// Background by default : red
 
