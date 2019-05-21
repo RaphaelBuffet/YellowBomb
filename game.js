@@ -1,32 +1,31 @@
 class Character
 {
-	tileFrom;
-	tileTo = [];
-	timeMoved = 0;
-	dimensions = [tileW-20,tileH-20];
-	position = [];
-	delayMove = 200;
+    constructor() {
+        this.tileFrom = [];
+        this.tileTo = [];
+        this.timeMoved = 0;
+        this.dimensions = [tileW - 20, tileH - 20];
+        this.position = [];
+        this.delayMove = 200;
+    }
 }
 
 class Player extends Character{
-	static image = new Image();
-	bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
-	score = 0;
-	country = {};
-	name = "";
-
-	constructor(){
-		super();
-		this.tileFrom	= [1,1];
-		this.tileTo		= [1,1];
-		this.timeMoved	= 0;
-		this.position	= [tileW+10,tileH+10];
-	}
+	constructor() {
+        super();
+        this.tileFrom = [1, 1];
+        this.tileTo = [1, 1];
+        this.timeMoved = 0;
+        this.position = [tileW + 10, tileH + 10];
+        this.bomb = {power: 5, number: 0, maxNumber: 5}; //defini l'explosion , nbr base , nbr max
+        this.score = 0;
+        this.country = {};
+        this.name = "";
+    }
 }
 
 class Ennemy extends Character
 {
-	static image = new Image();
 	constructor(positionx,positiony){
 		super();
 		this.tileFrom	= [(positionx-10)/62+1],[(positiony-10)/62+1];
@@ -38,7 +37,6 @@ class Ennemy extends Character
 
 class Ally extends Character
 {
-	static image = new Image();
 	constructor() {
 		super();
 		this.tileFrom = [1, 1];
@@ -48,6 +46,11 @@ class Ally extends Character
 	}
 }
 
+const imageCharacter = {
+    player: new Image(),
+    ennemy: new Image(),
+    ally: new Image()
+};
 
 // context
 var ctx = null;
@@ -68,9 +71,9 @@ var ennemy3 = new Ennemy(1064,10);
 var ennemy1 = new Ennemy(1064,630);
 var ennemy2 = new Ennemy(10,630);
 var ally = new Ally();
-Ennemy.image.src = "game/ressources/images/CRS.png";
-Ally.image.src = "game/ressources/images/ally.png";
-Player.image.src = "game/ressources/images/Punkette_jaune.png";
+imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
+imageCharacter.ally.src = "game/ressources/images/ally.png";
+imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -112,7 +115,7 @@ function drop(ev) {
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	ev.target.appendChild(document.getElementById(data));
-	Player.image = avatarImage[SPRITE_AVATAR[data]];
+	imageCharacter.player = avatarImage[SPRITE_AVATAR[data]];
 	if(ev.dataTransfer.items !== null)
 	{
 		document.getElementById("gameZone").hidden = true;
@@ -559,23 +562,23 @@ function drawGame()
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
 
 	// Draw the sprite of the hero
-	ctx.drawImage(Player.image, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
+	ctx.drawImage(imageCharacter.player, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
 	//Rapheal ennemi
-	ctx.drawImage(Ennemy.image, ennemy1.position[0], ennemy1.position[1], ennemy1.dimensions[0], ennemy1.dimensions[1]);
+	ctx.drawImage(imageCharacter.ennemy, ennemy1.position[0], ennemy1.position[1], ennemy1.dimensions[0], ennemy1.dimensions[1]);
 	ctx.fillRect(ennemy1.position[0], ennemy1.position[1],
 		ennemy1.dimensions[0], ennemy1.dimensions[1]);
 
-	ctx.drawImage(Ennemy.image, ennemy2.position[0], ennemy2.position[1], ennemy2.dimensions[0], ennemy2.dimensions[1]);
+	ctx.drawImage(imageCharacter.ennemy, ennemy2.position[0], ennemy2.position[1], ennemy2.dimensions[0], ennemy2.dimensions[1]);
 	ctx.fillRect(ennemy2.position[0], ennemy2.position[1],
 		ennemy2.dimensions[0], ennemy2.dimensions[1]);
 
-	ctx.drawImage(Ennemy.image, ennemy3.position[0], ennemy3.position[1], ennemy3.dimensions[0], ennemy3.dimensions[1]);
+	ctx.drawImage(imageCharacter.ennemy, ennemy3.position[0], ennemy3.position[1], ennemy3.dimensions[0], ennemy3.dimensions[1]);
 	ctx.fillRect(ennemy3.position[0], ennemy3.position[1],
 		ennemy3.dimensions[0], ennemy3.dimensions[1]);
 
-	ctx.drawImage(Ally.image, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
+	ctx.drawImage(imageCharacter.ally, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
 	ctx.fillRect(ally.position[0], ally.position[1],
 		ally.dimensions[0], ally.dimensions[1]);
 
