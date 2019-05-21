@@ -396,7 +396,13 @@ Ally.prototype.placeAt = function(x, y)
 };
 
 function checkIA(number) {
+/*
+	tabEnnemy.forEach(ennemy=>{
+		checkCharacter(ennemy, number, 1000);
+	});
+	checkCharacter(ally, number, -1500);
 
+ */
 	checkEnnemy1(number);
 	checkEnnemy2(number);
 	checkEnnemy3(number);
@@ -404,11 +410,11 @@ function checkIA(number) {
 	checkAlly(number)
 }
 
-function checkEnnemy(ennemy, number) {
+function checkCharacter(ennemy, number, point) {
 	if(ennemy.tileFrom[1]*mapW + ennemy.tileFrom[0] === number)
 	{
 		ennemy.placeAt(0,0);
-		player.score+=1000;
+		player.score+=point;
 	}
 }
 
