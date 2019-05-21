@@ -28,8 +28,8 @@ class Ennemy extends Character
 {
 	constructor(positionx,positiony){
 		super();
-		this.tileFrom	= [(positionx-10)/62+1],[(positiony-10)/62+1];
-		this.tileTo		= [(positionx-10)/62+1],[(positiony-10)/62+1];
+		this.tileFrom	= [1][1];
+		this.tileTo		= [1][1];
 		this.position	= [tileW+positionx,tileH+positiony];
 
 	}
@@ -41,7 +41,6 @@ class Ally extends Character
 		super();
 		this.tileFrom = [1, 1];
 		this.tileTo = [1, 1];
-		this.timeMoved = 0;
 		this.position = [tileW + 130, tileH + 130];
 	}
 }
