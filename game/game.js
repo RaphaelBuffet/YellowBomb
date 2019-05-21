@@ -1,21 +1,56 @@
-class Character {
-	tileFrom	= [1,1];
-	tileTo		= [1,1];
-	timeMoved	= 0;
-	dimensions	= [tileW-20,tileH-20];
-	position	= [tileW+10,tileH+10];
-	delayMove	= 200;
+class Character
+{
+	tileFrom;
+	tileTo = [];
+	timeMoved = 0;
+	dimensions = [tileW-20,tileH-20];
+	position = [];
+	delayMove = 200;
+}
+
+class Player extends Character{
+	static image = new Image();
 	bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
 	score = 0;
 	country = {};
 	name = "";
+
+	constructor(){
+		super();
+		this.tileFrom	= [1,1];
+		this.tileTo		= [1,1];
+		this.timeMoved	= 0;
+		this.position	= [tileW+10,tileH+10];
+	}
 }
+
+class Ennemy extends Character
+{
+	static image = new Image();
+	constructor(positionx,positiony){
+		super();
+		this.tileFrom	= [(positionx-10)/62+1],[(positiony-10)/62+1];
+		this.tileTo		= [(positionx-10)/62+1],[(positiony-10)/62+1];
+		this.position	= [tileW+positionx,tileH+positiony];
+
+	}
+}
+
+class Ally extends Character
+{
+	static image = new Image();
+	constructor() {
+		super();
+		this.tileFrom = [1, 1];
+		this.tileTo = [1, 1];
+		this.timeMoved = 0;
+		this.position = [tileW + 130, tileH + 130];
+	}
+}
+
 
 // context
 var ctx = null;
-// hero's image
-var heroImage = new Image();
-heroImage.src = "game/ressources/images/Punk_jaune.png";
 // unbreakable block image
 const buildingImage = new Image();
 buildingImage.src = "game/ressources/images/building.png";
@@ -23,14 +58,19 @@ buildingImage.src = "game/ressources/images/building.png";
 const barrierImage = new Image();
 barrierImage.src = "game/ressources/images/box.png";
 
-
-
 // choose of the map
 var gameMap = maps[0];
 
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
-var player = new Character();
+var player = new Player();
+var ennemy3 = new Ennemy(1064,10);
+var ennemy1 = new Ennemy(1064,630);
+var ennemy2 = new Ennemy(10,630);
+var ally = new Ally();
+Ennemy.image.src = "game/ressources/images/CRS.png";
+Ally.image.src = "game/ressources/images/ally.png";
+Player.image.src = "game/ressources/images/Punk_jaune.png";
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -63,7 +103,7 @@ function drop(ev) {
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	ev.target.appendChild(document.getElementById(data));
-	heroImage = avatarImage[SPRITE_AVATAR[data]];
+	Player.image.src = avatarImage[SPRITE_AVATAR[data]];
 	if(ev.dataTransfer.items !== null)
 	{
 		document.getElementById("gameZone").hidden = true;
@@ -104,7 +144,7 @@ Character.prototype.placeAt = function(x, y)
 Character.prototype.processMovement = function(t)
 {
 	// if we don't move
-	if(this.tileFrom[0]==this.tileTo[0] && this.tileFrom[1]==this.tileTo[1]) { return false; }
+	if(this.tileFrom[0]===this.tileTo[0] && this.tileFrom[1]===this.tileTo[1]) { return false; }
 
 	// if the current FrameTime is superior or equals of this delaysMove
 	if((t-this.timeMoved)>=this.delayMove)
@@ -116,12 +156,12 @@ Character.prototype.processMovement = function(t)
 		this.position[0] = (this.tileFrom[0] * tileW) + ((tileW-this.dimensions[0])/2);
 		this.position[1] = (this.tileFrom[1] * tileH) + ((tileH-this.dimensions[1])/2);
 
-		if(this.tileTo[0] != this.tileFrom[0])
+		if(this.tileTo[0] !== this.tileFrom[0])
 		{
 			var diff = (tileW / this.delayMove) * (t-this.timeMoved);
 			this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
 		}
-		if(this.tileTo[1] != this.tileFrom[1])
+		if(this.tileTo[1] !== this.tileFrom[1])
 		{
 			var diff = (tileH / this.delayMove) * (t-this.timeMoved);
 			this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
@@ -137,7 +177,7 @@ Character.prototype.processMovement = function(t)
 // Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
 {
-	this.player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
+	player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
 }
 
 //prépare l'explosion (loan)
@@ -188,7 +228,7 @@ function startExplosion(x,y) {
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
 		let pos = {};
 
-		for (let i = 1; i <= this.player.bomb.power; i++) {
+		for (let i = 1; i <= player.bomb.power; i++) {
 			pos = { // reste a gerer la sortie du tableau
 				top: (((y - i) * mapW) + x),
 				bottom: (((y + i) * mapW) + x),
@@ -196,7 +236,7 @@ function startExplosion(x,y) {
 				right: ((y * mapW) + x - i)
 			};
 			let sprite = SPRITE.explosion1;
-			let isLastSprite = i === this.player.bomb.power;
+			let isLastSprite = i === player.bomb.power;
 			if (isLastSprite) {
 				sprite = SPRITE.explosion2;
 			}
@@ -206,14 +246,14 @@ function startExplosion(x,y) {
 			extracted('right', sprite, isLastSprite);
 		}
 		setTimeout(function () {
-			this.player.bomb.number--;
+			player.bomb.number--;
 			for (let i = 0; i < explosionPosition.length; i++) {
 				gameMap[explosionPosition[i]] = SPRITE.emptyGround; //remplace ou on a enflamé par du sol
 			}
 		}, 1000);
 
 		function checkPlayer(number) {
-			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+			if(player.tileFrom[1]*mapW + player.tileFrom[0] === number)
 			{
 				recordScore();
 			}
@@ -336,12 +376,78 @@ window.onload = function()
 	});
 };
 
+
+
+
+Ennemy.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+};
+
+Ally.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+};
+
+function checkIA(number) {
+
+	checkEnnemy1(number);
+	checkEnnemy2(number);
+	checkEnnemy3(number);
+
+	checkAlly(number)
+}
+
+function checkEnnemy(ennemy, number) {
+	if(ennemy.tileFrom[1]*mapW + ennemy.tileFrom[0] === number)
+	{
+		ennemy.placeAt(0,0);
+		player.score+=1000;
+	}
+}
+
+function checkEnnemy1(number) {
+	if(ennemy1.tileFrom[1]*mapW + ennemy1.tileFrom[0] === number)
+	{
+		ennemy1.placeAt(0,0);
+		player.score+=1000;
+	}
+}
+function checkEnnemy2(number) {
+	if(ennemy2.tileFrom[1]*mapW + ennemy2.tileFrom[0] === number)
+	{
+		ennemy2.placeAt(1,0);
+		player.score+=1000;
+	}
+}
+function checkEnnemy3(number) {
+	if(ennemy3.tileFrom[1]*mapW + ennemy3.tileFrom[0] === number)
+	{
+		ennemy3.placeAt(2,0);
+		player.score+=1000;
+	}
+}
+
+
+function checkAlly(number) {
+	if(ally.tileFrom[1]*mapW + ally.tileFrom[0] === number)
+	{
+		ally.placeAt(0,1);
+		player.score-=1500;
+	}
+}
+
 function drawGame()
 {
 	if(ctx==null) { return; }
 
 	var currentFrameTime = Date.now();
-	var timeElapsed = currentFrameTime - lastFrameTime;
 
 	var sec = Math.floor(Date.now()/1000);
 	if(sec!=currentSecond)
@@ -438,16 +544,35 @@ function drawGame()
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
 
 	// Draw the sprite of the hero
-	ctx.drawImage(heroImage, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
+	ctx.drawImage(Player.image, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
+	//Rapheal ennemi
+	ctx.drawImage(Ennemy.image, ennemy1.position[0], ennemy1.position[1], ennemy1.dimensions[0], ennemy1.dimensions[1]);
+	ctx.fillRect(ennemy1.position[0], ennemy1.position[1],
+		ennemy1.dimensions[0], ennemy1.dimensions[1]);
+
+	ctx.drawImage(Ennemy.image, ennemy2.position[0], ennemy2.position[1], ennemy2.dimensions[0], ennemy2.dimensions[1]);
+	ctx.fillRect(ennemy2.position[0], ennemy2.position[1],
+		ennemy2.dimensions[0], ennemy2.dimensions[1]);
+
+	ctx.drawImage(Ennemy.image, ennemy3.position[0], ennemy3.position[1], ennemy3.dimensions[0], ennemy3.dimensions[1]);
+	ctx.fillRect(ennemy3.position[0], ennemy3.position[1],
+		ennemy3.dimensions[0], ennemy3.dimensions[1]);
+
+	ctx.drawImage(Ally.image, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
+	ctx.fillRect(ally.position[0], ally.position[1],
+		ally.dimensions[0], ally.dimensions[1]);
+
 	ctx.font = "20px Comic Sans MS";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
-	ctx.fillText("score : " + player.score, (this.tileW * this.mapW) - 60, 20);
+	ctx.fillText("score : " + player.score, (tileW * mapW) - 60, 20);
 	ctx.fillStyle = "green";
 	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
 
+
+	//fin raphi
 
 	// Background by default : red
 
