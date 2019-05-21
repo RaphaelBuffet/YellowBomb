@@ -1,101 +1,36 @@
+class Character {
+	tileFrom	= [1,1];
+	tileTo		= [1,1];
+	timeMoved	= 0;
+	dimensions	= [tileW-20,tileH-20];
+	position	= [tileW+10,tileH+10];
+	delayMove	= 200;
+	bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
+	score = 0;
+	country = {};
+	name = "";
+}
+
 // context
 var ctx = null;
 // hero's image
-const heroImage = new Image();
-heroImage.src = "ressources/images/gameImages/Punk_jaune.png";
+var heroImage = new Image();
+heroImage.src = "game/ressources/images/Punk_jaune.png";
 // unbreakable block image
 const buildingImage = new Image();
-buildingImage.src = "ressources/images/gameImages/building.png";
+buildingImage.src = "game/ressources/images/building.png";
 // breakable block image
 const barrierImage = new Image();
-barrierImage.src = "ressources/images/gameImages/box.png";
+barrierImage.src = "game/ressources/images/box.png";
 
-var playerName;
-//var playerNameSelection = prompt("Please, choose a player name", "",);
 
-const bombImage = [new Image(), new Image(), new Image() ];
-const explosionImage = [new Image(), new Image(), new Image()];
-bombImage[0].src = "ressources/images/gameImages/bomb0.png";
-bombImage[1].src = "ressources/images/gameImages/bomb1.png";
-bombImage[2].src = "ressources/images/gameImages/bomb2.png";
-//bombImage[3].src = "ressources/images/gameImages/bomb3.png"; il était trop noir
-explosionImage[0].src = "ressources/images/gameImages/explosion0.png";
-explosionImage[1].src = "ressources/images/gameImages/explosion1.png";
-explosionImage[2].src = "ressources/images/gameImages/explosion2.png";
-
-const SPRITE = {
-	delimitation:0,
-	emptyGround:1,
-	breakableWall:2,
-	unbreakableWall:3,
-	bomb0:4,
-	bomb1:5,
-	bomb2:6,
-	explosion0:8,
-	explosion1:9,
-	explosion2:10
-};
-/*
-Maps:
-0. Contour de la map
-1. Chemin parcourable
-2. Murs cassables
-3. Murs incassables
- */
-// Structure Map 1
-const gameMap1 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,
-	0, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1,0,
-	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 1,0,
-	0, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 2,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 2,0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1,0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,
-];
-
-const gameMap2 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 1, 3, 2, 3, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2, 3, 1, 1, 1, 0,
-	0, 1, 2, 1, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 1, 1, 0,
-	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 2, 3, 2, 3, 3, 2, 3, 2, 1, 0,
-	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 2, 2, 3, 2, 2, 1, 0,
-	0, 2, 2, 3, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 2, 3, 2, 2, 1, 0,
-	0, 2, 2, 2, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 3, 2, 1, 0,
-	0, 1, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 1, 1, 0,
-	0, 1, 2, 2, 3, 3, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 1, 1, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 1, 1, 1, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
-
-const gameMap3 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 3, 1, 0,
-	0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 1, 0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 1, 0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 1, 0,
-	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0,
-	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 1, 1, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
 
 // choose of the map
-var gameMap = gameMap1;
+var gameMap = maps[0];
 
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
+var player = new Character();
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -109,7 +44,33 @@ var keysDown = {
 	40 : false
 };
 
-var player = new Character();
+const selectionCharacter = document.getElementById("avatarZone");
+selectionCharacter.addEventListener("dragover", dragover);
+selectionCharacter.addEventListener("dragenter", dragenter);
+selectionCharacter.addEventListener("drop", drop);
+
+function drag(ev) {
+	ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function dragover(e) {
+	e.preventDefault()
+}
+function dragenter(e) {
+	e.preventDefault()
+}
+function drop(ev) {
+	ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	ev.target.appendChild(document.getElementById(data));
+	heroImage = avatarImage[SPRITE_AVATAR[data]];
+	if(ev.dataTransfer.items !== null)
+	{
+		document.getElementById("gameZone").hidden = true;
+	}
+}
+// Méthodes de drag and drop (Sam) -- Fin
+
 
 playerNameSelection();
 
@@ -127,26 +88,7 @@ if (navigator.geolocation) {
 		};
 		xhttp.open("GET", `http://api.geonames.org/countryCodeJSON?lat=${coord.coords.latitude}&lng=${coord.coords.longitude}&username=demo`, true);
 		xhttp.send();
-
-
-
-	}, (fail)=> {
-
 	});
-}
-
-
-function Character()
-{
-	this.tileFrom	= [1,1];
-	this.tileTo		= [1,1];
-	this.timeMoved	= 0;
-	this.dimensions	= [tileW-20,tileH-20];
-	this.position	= [tileW+10,tileH+10];
-	this.delayMove	= 200;
-	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
-	this.score = 0;
-	this.country = {}
 }
 
 // Placement of the character
@@ -195,13 +137,7 @@ Character.prototype.processMovement = function(t)
 // Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
 {
-	playerName = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
-	if (playerName != null) { // s'il n'est pas null
-		// on affiche le nom du joueur sur la page
-		document.getElementById("playerName").innerHTML = "Joueur: " + playerName;
-		document.getElementById("playerName").style.color = "#7bff00";
-		document.getElementById("playerName").style.background = "#302020";
-	}
+	this.player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
 }
 
 //prépare l'explosion (loan)
@@ -295,9 +231,8 @@ function startExplosion(x,y) {
 				score = JSON.parse(score); //conversion le json en objet pour le local
 			}
 			score.push({
-				name: playerName,
+				name: player.name,
 				score: player.score,
-				country: "CH",
 				date: new Date(),
 				country: {
 					name: player.country.name,
@@ -399,8 +334,6 @@ window.onload = function()
 			e.cancelBubble = true;
 		}
 	});
-
-
 };
 
 function drawGame()
@@ -511,7 +444,10 @@ function drawGame()
 	ctx.font = "20px Comic Sans MS";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
-	ctx.fillText(player.score, (this.tileW*this.mapW)-(tileW/2), 20);
+	ctx.fillText(player.score, (this.tileW * this.mapW) - (tileW / 2), 20);
+	ctx.fillStyle = "green";
+	ctx.fillText("Name : " + player.name, 80 + player.name.length * 11.3, 20);
+
 
 	// Background by default : red
 
