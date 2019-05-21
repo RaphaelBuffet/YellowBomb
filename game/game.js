@@ -444,9 +444,9 @@ function drawGame()
 	ctx.font = "20px Comic Sans MS";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
-	ctx.fillText(player.score, (this.tileW * this.mapW) - (tileW / 2), 20);
+	ctx.fillText("score : " + player.score, (this.tileW * this.mapW) - 60, 20);
 	ctx.fillStyle = "green";
-	ctx.fillText("Name : " + player.name, 80 + player.name.length * 11.3, 20);
+	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
 
 
 	// Background by default : red
