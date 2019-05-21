@@ -7,25 +7,21 @@
     <link rel="stylesheet" href="ressources/css/style_start.css">
 </head>
 <body>
-
 <header>
     <h1>HES-SO Vs - 624-2 - HTML/CSS/JavaScript</h1>
     <nav>
         <ul>
             <li class="hamburger">
-            <img src="ressources/images/hamburger_icon.svg">
-            </li>
-            <li>
-                <a href="description_start.html">Description</a>
+                <img src="ressources/images/hamburger_icon.svg" >
             </li>
             <li class="active">
+                <a href="description_start.html">Description</a>
+            </li>
+            <li>
                 <a href="game.html">Jeu</a>
             </li>
             <li>
                 <a href="maquettes_start.html">Maquettes</a>
-            </li>
-            <li>
-                <a href="scoreBoard.html">Hall of fames</a>
             </li>
             <li>
                 <a href="mockup_start.html">Mockup</a>
@@ -39,27 +35,50 @@
         </ul>
     </nav>
 </header>
-<!-- Zone d'affichage du nom du joueur et de séleciton de son avatar (Sam) -->
-<div id="gameZone">
-    <div id="avatarZone"></div>
-    <div id="playerName"></div>
-    <div id="avatars"><img id="avatar1" src="game/ressources/images/Punk_jaune.png"/><img id="avatar2" src="game/ressources/images/Punkette_jaune.png"/></div>
-</div>
 
 <main>
-    <script src="game/ressources/images.js"></script>
-    <script src="game/ressources/maps.js"></script>
-    <script type="module" src="game.js"></script>
-    <canvas id="game" width="1240" height="806" ondrop="drop(event)" ondragover="allowDrop(event)"></canvas>
+    <!-- Début zone pour votre contenu -->
+    <section id="articles">
+	    <article>
+        </br>
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            #
+                        </td>
+                        <td>
+                            Nom
+                        </td>
+                        <td>
+                            Score
+                        </td>
+                        <td>
+                            Pays
+                        </td>
+                        <td>
+                            Date
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="scoreBoard">
+                </tbody>
+            </table>
+            </br>
+        </article>
+    </section>
+
+
+    <script src="game/scoreBoard.js"></script>
 </main>
 
 <footer>
     <div>
-        <img id="logoBombe" src="ressources/images/logoBomb.png" alt="logo d'une bombe">
+    <img id="logoBombe" src="ressources/images/logoBomb.png">
     </div>
     <div></div>
     <div>
-        <img id="logoHES" src="ressources/images/logo.png" alt="Logo de la haute école spécialisée de la suisse occidentale">
+    <img id="logoHES" src="ressources/images/logo.png">
     </div>
 </footer>
 
