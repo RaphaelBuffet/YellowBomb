@@ -40,9 +40,13 @@
     <!-- Début zone pour votre contenu -->
     <section id="articles">
 	    <article>
+        </br>
             <table>
                 <thead>
                     <tr>
+                        <td>
+                            #
+                        </td>
                         <td>
                             Nom
                         </td>
@@ -60,26 +64,12 @@
                 <tbody id="scoreBoard">
                 </tbody>
             </table>
+            </br>
         </article>
     </section>
 
 
-    <script>
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            // test du statut de retour de la requête AJAX
-            if (xhttp.readyState == 4 && (xhttp.status == 200 || xhttp.status == 0)) {
-                // on désérialise le catalogue et on le sauvegarde dans une variable
-                let score = JSON.parse(xhttp.responseText);
-                score.sort(function(a,b){
-                    return b.score - a.score;
-                });
-            }
-        };
-        xhttp.open("GET", "./score.json", true);
-        xhttp.send();
-    </script>
+    <script src="game/scoreBoard.js"></script>
 </main>
 
 <footer>

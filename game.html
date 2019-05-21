@@ -12,9 +12,9 @@
     <h1>HES-SO Vs - 624-2 - HTML/CSS/JavaScript</h1>
     <nav>
         <ul>
-            <!--<li class="hamburger">-->
-            <!--<img src="ressources/images/hamburger_icon.svg">-->
-            <!--</li>-->
+            <li class="hamburger">
+            <img src="ressources/images/hamburger_icon.svg">
+            </li>
             <li>
                 <a href="description_start.html">Description</a>
             </li>
@@ -39,10 +39,18 @@
         </ul>
     </nav>
 </header>
-<p id="playerName"></p>
+<!-- Zone d'affichage du nom du joueur et de séleciton de son avatar (Sam) -->
+<div id="gameZone">
+    <div id="avatarZone"></div>
+    <div id="playerName"></div>
+    <div id="avatars"><img id="avatar1" src="game/ressources/images/Punk_jaune.png"/><img id="avatar2" src="game/ressources/images/Punkette_jaune.png"/></div>
+</div>
+
 <main>
-    <script src="game.js"></script>
-    <canvas id="game" width="1240" height="806"></canvas>
+    <script src="game/ressources/images.js"></script>
+    <script src="game/ressources/maps.js"></script>
+    <script type="module" src="game.js"></script>
+    <canvas id="game" width="1240" height="806" ondrop="drop(event)" ondragover="allowDrop(event)"></canvas>
 </main>
 
 <footer>

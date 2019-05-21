@@ -1,107 +1,79 @@
+class Character
+{
+    constructor() {
+        this.tileFrom = [];
+        this.tileTo = [];
+        this.timeMoved = 0;
+        this.dimensions = [tileW - 20, tileH - 20];
+        this.position = [];
+        this.delayMove = 200;
+    }
+}
+
+class Player extends Character{
+	constructor() {
+        super();
+        this.tileFrom = [1, 1];
+        this.tileTo = [1, 1];
+        this.timeMoved = 0;
+        this.position = [tileW + 10, tileH + 10];
+        this.bomb = {power: 5, number: 0, maxNumber: 5}; //defini l'explosion , nbr base , nbr max
+        this.score = 0;
+        this.country = {};
+        this.name = "";
+    }
+}
+
+class Ennemy extends Character
+{
+	constructor(positionx,positiony){
+		super();
+		this.tileFrom	= [(positionx-10)/62+1],[(positiony-10)/62+1];
+		this.tileTo		= [(positionx-10)/62+1],[(positiony-10)/62+1];
+		this.position	= [tileW+positionx,tileH+positiony];
+
+	}
+}
+
+class Ally extends Character
+{
+	constructor() {
+		super();
+		this.tileFrom = [1, 1];
+		this.tileTo = [1, 1];
+		this.timeMoved = 0;
+		this.position = [tileW + 130, tileH + 130];
+	}
+}
+
+const imageCharacter = {
+    player: new Image(),
+    ennemy: new Image(),
+    ally: new Image()
+};
+
 // context
 var ctx = null;
-// hero's image
-const heroImage = new Image();
-heroImage.src = "ressources/images/gameImages/Punk_jaune.png";
 // unbreakable block image
 const buildingImage = new Image();
-buildingImage.src = "ressources/images/gameImages/building.png";
+buildingImage.src = "game/ressources/images/building.png";
 // breakable block image
 const barrierImage = new Image();
-barrierImage.src = "ressources/images/gameImages/box.png";
-
-const EnnemyImage = new Image();
-EnnemyImage.src = "ressources/images/gameImages/CRS.png";
-
-const AllyImage = new Image();
-AllyImage.src = "ressources/images/gameImages/ally.png";
-
-var playerName;
-//var playerNameSelection = prompt("Please, choose a player name", "",);
-
-const bombImage = [new Image(), new Image(), new Image() ];
-const explosionImage = [new Image(), new Image(), new Image()];
-bombImage[0].src = "ressources/images/gameImages/bomb0.png";
-bombImage[1].src = "ressources/images/gameImages/bomb1.png";
-bombImage[2].src = "ressources/images/gameImages/bomb2.png";
-//bombImage[3].src = "ressources/images/gameImages/bomb3.png"; il était trop noir
-explosionImage[0].src = "ressources/images/gameImages/explosion0.png";
-explosionImage[1].src = "ressources/images/gameImages/explosion1.png";
-explosionImage[2].src = "ressources/images/gameImages/explosion2.png";
-
-const SPRITE = {
-	delimitation:0,
-	emptyGround:1,
-	breakableWall:2,
-	unbreakableWall:3,
-	bomb0:4,
-	bomb1:5,
-	bomb2:6,
-	explosion0:8,
-	explosion1:9,
-	explosion2:10
-};
-/*
-Maps:
-0. Contour de la map
-1. Chemin parcourable
-2. Murs cassables
-3. Murs incassables
- */
-// Structure Map 1
-const gameMap1 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,
-	0, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1,0,
-	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 1,0,
-	0, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,0,
-	0, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 2,0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,0,
-	0, 1, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 1, 2,0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1,0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,
-];
-
-const gameMap2 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 1, 3, 2, 3, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2, 3, 1, 1, 1, 0,
-	0, 1, 2, 1, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 1, 1, 0,
-	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 2, 3, 2, 3, 3, 2, 3, 2, 1, 0,
-	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 2, 2, 3, 2, 2, 1, 0,
-	0, 2, 2, 3, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 2, 3, 2, 2, 1, 0,
-	0, 2, 2, 2, 2, 3, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 3, 2, 1, 0,
-	0, 1, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 3, 1, 1, 0,
-	0, 1, 2, 2, 3, 3, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 1, 1, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 1, 1, 1, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
-
-const gameMap3 = [
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 3, 1, 0,
-	0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 3, 1, 0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 3, 1, 0,
-	0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0,
-	0, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 1, 0,
-	0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0,
-	0, 1, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 1, 1, 0,
-	0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-];
+barrierImage.src = "game/ressources/images/box.png";
 
 // choose of the map
-var gameMap = gameMap1;
+var gameMap = maps[0];
 
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
+var player = new Player();
+var ennemy3 = new Ennemy(1064,10);
+var ennemy1 = new Ennemy(1064,630);
+var ennemy2 = new Ennemy(10,630);
+var ally = new Ally();
+imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
+imageCharacter.ally.src = "game/ressources/images/ally.png";
+imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -115,51 +87,64 @@ var keysDown = {
 	40 : false
 };
 
-var player = new Character();
-var ennemy = new Ennemy();
-var ally = new Ally();
+const selectionCharacter = document.getElementById("avatarZone");
+selectionCharacter.addEventListener("dragover", dragover);
+selectionCharacter.addEventListener("dragenter", dragenter);
+selectionCharacter.addEventListener("drop", drop);
+const avatars = document.getElementById("avatars");
+const childAv = avatars.getElementsByTagName("img");
+console.log(childAv);
+for(let i =0; i<childAv.length;i++){
+	let child = childAv[i];
+	console.log(child);
+	child.ondragstart = drag;
+	child.draggable = true;
+}
+
+function drag(ev) {
+	ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function dragover(e) {
+	e.preventDefault()
+}
+function dragenter(e) {
+	e.preventDefault()
+}
+function drop(ev) {
+	ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	ev.target.appendChild(document.getElementById(data));
+	imageCharacter.player = avatarImage[SPRITE_AVATAR[data]];
+	if(ev.dataTransfer.items !== null)
+	{
+		document.getElementById("gameZone").hidden = true;
+	}
+}
+// Méthodes de drag and drop (Sam) -- Fin
+
 
 playerNameSelection();
 
-function Character()
-{
-	this.tileFrom	= [1,1];
-	this.tileTo		= [1,1];
-	this.timeMoved	= 0;
-	this.dimensions	= [tileW-20,tileH-20];
-	this.position	= [tileW+10,tileH+10];
-	this.delayMove	= 200;
-	this.bomb = {power:5, number:0, maxNumber:5}; //defini l'explosion , nbr base , nbr max
-	this.score = 0;
-}
-function Ennemy()
-{
-	this.tileFrom	= [1,1];
-	this.tileTo		= [1,1];
-	this.timeMoved	= 0;
-	this.dimensions	= [tileW-20,tileH-20];
-	this.position	= [tileW+20,tileH+10];
-	this.delayMove	= 200;
-}
-
-function Ally()
-{
-	this.tileFrom	= [1,1];
-	this.tileTo		= [1,1];
-	this.timeMoved	= 0;
-	this.dimensions	= [tileW-20,tileH-20];
-	this.position	= [tileW+20,tileH+10];
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition((coord) =>{
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			// test du statut de retour de la requête AJAX
+			if (xhttp.readyState == 4 && (xhttp.status == 200 || xhttp.status == 0)) {
+				// on désérialise le catalogue et on le sauvegarde dans une variable
+				let country = JSON.parse(xhttp.responseText);
+				player.country.name = country.countryName;
+				player.country.code = country.countryCode;
+			}
+		};
+		xhttp.open("GET", `http://api.geonames.org/countryCodeJSON?lat=${coord.coords.latitude}&lng=${coord.coords.longitude}&username=demo`, true);
+		xhttp.send();
+	});
 }
 
 // Placement of the character
 Character.prototype.placeAt = function(x, y)
-{
-	this.tileFrom	= [x,y];
-	this.tileTo		= [x,y];
-	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
-		((tileH*y)+((tileH-this.dimensions[1])/2))];
-};
-Ennemy.prototype.placeAt = function(x, y)
 {
 	this.tileFrom	= [x,y];
 	this.tileTo		= [x,y];
@@ -171,7 +156,7 @@ Ennemy.prototype.placeAt = function(x, y)
 Character.prototype.processMovement = function(t)
 {
 	// if we don't move
-	if(this.tileFrom[0]==this.tileTo[0] && this.tileFrom[1]==this.tileTo[1]) { return false; }
+	if(this.tileFrom[0]===this.tileTo[0] && this.tileFrom[1]===this.tileTo[1]) { return false; }
 
 	// if the current FrameTime is superior or equals of this delaysMove
 	if((t-this.timeMoved)>=this.delayMove)
@@ -183,12 +168,12 @@ Character.prototype.processMovement = function(t)
 		this.position[0] = (this.tileFrom[0] * tileW) + ((tileW-this.dimensions[0])/2);
 		this.position[1] = (this.tileFrom[1] * tileH) + ((tileH-this.dimensions[1])/2);
 
-		if(this.tileTo[0] != this.tileFrom[0])
+		if(this.tileTo[0] !== this.tileFrom[0])
 		{
 			var diff = (tileW / this.delayMove) * (t-this.timeMoved);
 			this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
 		}
-		if(this.tileTo[1] != this.tileFrom[1])
+		if(this.tileTo[1] !== this.tileFrom[1])
 		{
 			var diff = (tileH / this.delayMove) * (t-this.timeMoved);
 			this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
@@ -201,17 +186,10 @@ Character.prototype.processMovement = function(t)
 	return true;
 };
 
-
 // Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
 {
-	playerName = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
-	if (playerName != null) { // s'il n'est pas null
-		// on affiche le nom du joueur sur la page
-		document.getElementById("playerName").innerHTML = "Joueur: " + playerName;
-		document.getElementById("playerName").style.color = "#7bff00";
-		document.getElementById("playerName").style.background = "#302020";
-	}
+	player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
 }
 
 //prépare l'explosion (loan)
@@ -260,11 +238,9 @@ function startExplosion(x,y) {
 		gameMap[bombPosition] = SPRITE.explosion0; // on remplace le sprite de la bombe par l'explosion
 		explosionPosition.push(bombPosition); //dit qu'on a modif le terrain
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
-		checkEnnemy(bombPosition);
-		checkAlly(bombPosition);
 		let pos = {};
 
-		for (let i = 1; i <= this.player.bomb.power; i++) {
+		for (let i = 1; i <= player.bomb.power; i++) {
 			pos = { // reste a gerer la sortie du tableau
 				top: (((y - i) * mapW) + x),
 				bottom: (((y + i) * mapW) + x),
@@ -272,7 +248,7 @@ function startExplosion(x,y) {
 				right: ((y * mapW) + x - i)
 			};
 			let sprite = SPRITE.explosion1;
-			let isLastSprite = i === this.player.bomb.power;
+			let isLastSprite = i === player.bomb.power;
 			if (isLastSprite) {
 				sprite = SPRITE.explosion2;
 			}
@@ -282,32 +258,43 @@ function startExplosion(x,y) {
 			extracted('right', sprite, isLastSprite);
 		}
 		setTimeout(function () {
-			this.player.bomb.number--;
+			player.bomb.number--;
 			for (let i = 0; i < explosionPosition.length; i++) {
 				gameMap[explosionPosition[i]] = SPRITE.emptyGround; //remplace ou on a enflamé par du sol
 			}
 		}, 1000);
 
 		function checkPlayer(number) {
-			if(this.player.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+			if(player.tileFrom[1]*mapW + player.tileFrom[0] === number)
 			{
-				// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
-				console.log("Player Dead");
+				recordScore();
 			}
 		}
 
-		function checkEnnemy(number) {
-			if(this.ennemy.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
+		function recordScore(){
+			// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
+			let score = localStorage.getItem("score");
+			if(!score)
 			{
-				player.score+=1000;
+				score = [];
 			}
-		}
+			else
+			{
+				score = JSON.parse(score); //conversion le json en objet pour le local
+			}
+			score.push({
+				name: player.name,
+				score: player.score,
+				date: new Date(),
+				country: {
+					name: player.country.name,
+					code: player.country.code
+				}
 
-		function checkAlly(number) {
-			if(this.ally.tileFrom[1]*mapW + this.player.tileFrom[0] === number)
-			{
-				player.score-=1500;
-			}
+			});
+			console.log(JSON.stringify(score));
+			localStorage.setItem("score", JSON.stringify(score));
+			console.log("Player Dead");
 		}
 
 		//Suivant ce que touche l'explosion (loan)
@@ -399,16 +386,86 @@ window.onload = function()
 			e.cancelBubble = true;
 		}
 	});
-
-
 };
+
+
+
+
+Ennemy.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+};
+
+Ally.prototype.placeAt = function(x, y)
+{
+	this.tileFrom	= [x,y];
+	this.tileTo		= [x,y];
+	this.position	= [  ((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+};
+
+function checkIA(number) {
+/*
+	tabEnnemy.forEach(ennemy=>{
+		checkCharacter(ennemy, number, 1000);
+	});
+	checkCharacter(ally, number, -1500);
+
+ */
+	checkEnnemy1(number);
+	checkEnnemy2(number);
+	checkEnnemy3(number);
+
+	checkAlly(number)
+}
+
+function checkCharacter(ennemy, number, point) {
+	if(ennemy.tileFrom[1]*mapW + ennemy.tileFrom[0] === number)
+	{
+		ennemy.placeAt(0,0);
+		player.score+=point;
+	}
+}
+
+function checkEnnemy1(number) {
+	if(ennemy1.tileFrom[1]*mapW + ennemy1.tileFrom[0] === number)
+	{
+		ennemy1.placeAt(0,0);
+		player.score+=1000;
+	}
+}
+function checkEnnemy2(number) {
+	if(ennemy2.tileFrom[1]*mapW + ennemy2.tileFrom[0] === number)
+	{
+		ennemy2.placeAt(1,0);
+		player.score+=1000;
+	}
+}
+function checkEnnemy3(number) {
+	if(ennemy3.tileFrom[1]*mapW + ennemy3.tileFrom[0] === number)
+	{
+		ennemy3.placeAt(2,0);
+		player.score+=1000;
+	}
+}
+
+
+function checkAlly(number) {
+	if(ally.tileFrom[1]*mapW + ally.tileFrom[0] === number)
+	{
+		ally.placeAt(0,1);
+		player.score-=1500;
+	}
+}
 
 function drawGame()
 {
 	if(ctx==null) { return; }
 
 	var currentFrameTime = Date.now();
-	var timeElapsed = currentFrameTime - lastFrameTime;
 
 	var sec = Math.floor(Date.now()/1000);
 	if(sec!=currentSecond)
@@ -426,13 +483,11 @@ function drawGame()
 			 player.tileFrom[1]>0 &&
 			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
 			player.tileTo[1]-= 1;
-			ennemy.tileTo[1]+=1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
 						gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
 			player.tileTo[1]+= 1;
-			ennemy.tileTo[1]-=1;
 		}
 		else if(keysDown[37] &&
 						player.tileFrom[0]>0 &&
@@ -452,6 +507,7 @@ function drawGame()
 
 		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
 		{ player.timeMoved = currentFrameTime; }
+
 
 	}
 
@@ -506,23 +562,35 @@ function drawGame()
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
 
 	// Draw the sprite of the hero
-	ctx.drawImage(heroImage, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
+	ctx.drawImage(imageCharacter.player, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
+	//Rapheal ennemi
+	ctx.drawImage(imageCharacter.ennemy, ennemy1.position[0], ennemy1.position[1], ennemy1.dimensions[0], ennemy1.dimensions[1]);
+	ctx.fillRect(ennemy1.position[0], ennemy1.position[1],
+		ennemy1.dimensions[0], ennemy1.dimensions[1]);
 
-	ctx.drawImage(EnnemyImage, ennemy.position[0], ennemy.position[1], ennemy.dimensions[0], ennemy.dimensions[1]);
-	ctx.fillRect(ennemy.position[0], ennemy.position[1],
-		ennemy.dimensions[0], ennemy.dimensions[1]);
+	ctx.drawImage(imageCharacter.ennemy, ennemy2.position[0], ennemy2.position[1], ennemy2.dimensions[0], ennemy2.dimensions[1]);
+	ctx.fillRect(ennemy2.position[0], ennemy2.position[1],
+		ennemy2.dimensions[0], ennemy2.dimensions[1]);
 
-	ctx.drawImage(AllyImage, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
+	ctx.drawImage(imageCharacter.ennemy, ennemy3.position[0], ennemy3.position[1], ennemy3.dimensions[0], ennemy3.dimensions[1]);
+	ctx.fillRect(ennemy3.position[0], ennemy3.position[1],
+		ennemy3.dimensions[0], ennemy3.dimensions[1]);
+
+	ctx.drawImage(imageCharacter.ally, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
 	ctx.fillRect(ally.position[0], ally.position[1],
 		ally.dimensions[0], ally.dimensions[1]);
-
 
 	ctx.font = "20px Comic Sans MS";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
-	ctx.fillText(player.score, (this.tileW*this.mapW)-(tileW/2), 20);
+	ctx.fillText("score : " + player.score, (tileW * mapW) - 60, 20);
+	ctx.fillStyle = "green";
+	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
+
+
+	//fin raphi
 
 	// Background by default : red
 
