@@ -70,7 +70,7 @@ var ennemy2 = new Ennemy(10,630);
 var ally = new Ally();
 Ennemy.image.src = "game/ressources/images/CRS.png";
 Ally.image.src = "game/ressources/images/ally.png";
-Player.image.src = "game/ressources/images/Punk_jaune.png";
+Player.image.src = "game/ressources/images/Punkette_jaune.png";
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -88,6 +88,15 @@ const selectionCharacter = document.getElementById("avatarZone");
 selectionCharacter.addEventListener("dragover", dragover);
 selectionCharacter.addEventListener("dragenter", dragenter);
 selectionCharacter.addEventListener("drop", drop);
+const avatars = document.getElementById("avatars");
+const childAv = avatars.getElementsByTagName("img");
+console.log(childAv);
+for(let i =0; i<childAv.length;i++){
+	let child = childAv[i];
+	console.log(child);
+	child.ondragstart = drag;
+	child.draggable = true;
+}
 
 function drag(ev) {
 	ev.dataTransfer.setData("text", ev.target.id);
@@ -103,7 +112,7 @@ function drop(ev) {
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	ev.target.appendChild(document.getElementById(data));
-	Player.image.src = avatarImage[SPRITE_AVATAR[data]];
+	Player.image = avatarImage[SPRITE_AVATAR[data]];
 	if(ev.dataTransfer.items !== null)
 	{
 		document.getElementById("gameZone").hidden = true;
