@@ -473,25 +473,25 @@ function move() {
 				switch (random) {
 					case 0:
 						if (enemies[i].tileFrom[1] > 0 &&
-							gameMap[toIndex(ally.tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
+							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
 							enemies[i].tileTo[1] -= 1;
 						}
 						break;
 					case 1:
 						if (enemies[i].tileFrom[1] > 0 &&
-							gameMap[toIndex(player.tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
+							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
 							enemies[i].tileTo[1] += 1;
 						}
 						break;
 					case 2:
 						if (enemies[i].tileFrom[1] > 0 &&
-							gameMap[toIndex(player.tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
+							gameMap[toIndex(enemies[i].tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] -= 1;
 						}
 						break;
 					case 3:
 						if (enemies[i].tileFrom[1] > 0 &&
-							gameMap[toIndex(ally.tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
+							gameMap[toIndex(enemies[i].tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] += 1;
 						}
 						break;
@@ -515,20 +515,20 @@ function move() {
 					break;
 				case 1:
 					if (ally.tileFrom[1] > 0 &&
-						gameMap[toIndex(player.tileFrom[0], ally.tileFrom[1] + 1)] === 1) {
+						gameMap[toIndex(ally.tileFrom[0], ally.tileFrom[1] + 1)] === 1) {
 						ally.tileTo[1] += 1;
 					}
 					break;
 				case 2:
 					if (ally.tileFrom[1] > 0 &&
-						gameMap[toIndex(player.tileFrom[0] - 1, ally.tileFrom[1])] === 1) {
+						gameMap[toIndex(ally.tileFrom[0] - 1, ally.tileFrom[1])] === 1) {
 						ally.tileTo[0] -= 1;
 					}
 					break;
 				case 3:
 					if (ally.tileFrom[1] > 0 &&
 						gameMap[toIndex(ally.tileFrom[0] + 1, ally.tileFrom[1])] === 1) {
-						ally.tileTo[0] += 1;
+						ally.tileTo[0]+= 1;
 					}
 					break;
 			}
