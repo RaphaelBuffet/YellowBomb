@@ -382,6 +382,15 @@ function toIndex(x, y)
 {
 	return((y * mapW) + x);
 }
+function IsCollition(x, y)
+{
+	for(var i=0;i<enemies.length;i++){
+		if(enemies[i].tileFrom[0]===x && enemies[i].tileFrom[1]===y){
+			return false;
+		}
+	}
+	return true;
+}
 
 window.onload = function()
 {
@@ -631,22 +640,22 @@ function drawGame()
 	{
 		if(keysDown[38] &&
 			 player.tileFrom[1]>0 &&
-			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
+			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1 && IsCollition(player.tileFrom[0], player.tileFrom[1]-1)) {
 			player.tileTo[1]-= 1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
-						gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
+						gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1 && IsCollition(player.tileFrom[0], player.tileFrom[1]+1)) {
 			player.tileTo[1]+= 1;
 		}
 		else if(keysDown[37] &&
 						player.tileFrom[0]>0 &&
-						gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]===1) {
+						gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]===1 && IsCollition(player.tileFrom[0]-1, player.tileFrom[1])) {
 			player.tileTo[0]-= 1;
 		}
 		else if(keysDown[39] &&
 						player.tileFrom[0]<(mapW-1) &&
-						gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1) {
+						gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1 && IsCollition(player.tileFrom[0]+1, player.tileFrom[1])) {
 			player.tileTo[0]+= 1;
 		}
 		//Si l'espace est appuier (loan)
