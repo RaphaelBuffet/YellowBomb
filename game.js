@@ -78,6 +78,8 @@ imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
 imageCharacter.ally.src = "game/ressources/images/ally.png";
 imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 
+var ennemyKilled = 0;
+
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
 
@@ -272,6 +274,7 @@ function startExplosion(x,y) {
 			if(player.tileFrom[1]*mapW + player.tileFrom[0] === number)
 			{
 				recordScore();
+				gameOver(false);
 			}
 		}
 
@@ -300,6 +303,25 @@ function startExplosion(x,y) {
 			localStorage.setItem("score", JSON.stringify(score));
 			console.log("Player Dead");
 			//player.placeAt(0,0);
+		}
+
+		// affiche un écran à la partie terminée (Sam)
+		function gameOver(win)
+		{
+			var image = new Image();
+
+			// Si on a gagné, on affiche l'écran de victoire
+			if(win)
+			{
+				image.src = "game/ressources/images/victoryScreen.jpg"
+				document.getElementById("game").replaceWith(image);
+			}
+			// Si on a perdu, on affiche l'écran de défaite
+			else if (!win)
+			{
+				image.src = "game/ressources/images/gameoverScreen.jpg"
+				document.getElementById("game").replaceWith(image);
+			}
 		}
 
 		//Suivant ce que touche l'explosion (loan)

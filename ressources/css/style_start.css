@@ -352,4 +352,10 @@ body > main > section > article > table tfoot .links a{
         padding-left:0;
     }
 
+    .commentZone
+    {
+        width:140px;
+        float:left;
+        height:100%;
+    }
 }
