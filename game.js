@@ -466,14 +466,6 @@ function checkIA(number) {
 	checkAlly(number);
 }
 
-function checkCharacter(ennemy, number, point) {
-	if(ennemy.tileFrom[1]*mapW + ennemy.tileFrom[0] === number)
-	{
-		ennemy.placeAt(0,0);
-		player.score+=point;
-	}
-}
-
 function checkEnemies(number) {
 	for (var i=0;i<enemies.length;i++){
 		if(enemies[i].tileFrom[1]*mapW + enemies[i].tileFrom[0] === number)
@@ -732,9 +724,6 @@ function drawGame()
 	/*ctx.fillStyle = "#00ff24";
 	ctx.font = "25px arial";
 	ctx.fillText("Joueur: " + playerName, 10, 20);*/
-
-
-
 
 	lastFrameTime = currentFrameTime;
 	requestAnimationFrame(drawGame);
