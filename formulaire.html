@@ -44,42 +44,50 @@
 </header>
 
 <main>
-    <form id="test-form">
-        <label for="joueur">Joueur</label>
-        <input type="text" name="joueur" id="joueur"/>
+    <section id="articles">
+        <article>
+            <header>
+                <h2>Quel est votre avis sur Yellow Bomb?</h2>
+                <p>Par Samuel Pinto Da Silva le 22/05/2019 à 23:00</p>
+            </header>
+            <form id="test-form">
+                <label for="joueur">Joueur</label>
+                <input type="text" name="joueur" id="joueur"/>
 
-        <br />
-        <br />
+                <br />
+                <br />
 
-        <label for="note">Note (1 à 5):</label>
-        <select name="note" id="note">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
+                <label for="note">Note (1 à 5):</label>
+                <select name="note" id="note">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
 
-        <br />
-        <br />
+                <br />
+                <br />
 
-        <div>
-            <div  id="commentZone">
-                <label for="commentaire">Commentaire(s) : </label><br />
-                <textarea name="commentaire" id="commentaire"/></textarea>
-            </div>
+                <div>
+                    <div  id="commentZone">
+                        <label for="commentaire">Commentaire(s) : </label><br />
+                        <textarea name="commentaire" id="commentaire"/></textarea>
+                    </div>
 
-            <div>
-                <label for="recommandation">Recommandation(s) : </label><br />
-                <textarea name="recommandation" id="recommandation"/></textarea>
-            </div>
-        </div>
-        <br />
+                    <div>
+                        <label for="recommandation">Recommandation(s) : </label><br />
+                        <textarea name="recommandation" id="recommandation"/></textarea>
+                    </div>
+                </div>
+                <br />
 
 
-        <button type="submit" id="submit-form" name="envoyer" >Envoyer</button>
+                <button type="submit" id="submit-form" name="envoyer" >Envoyer</button>
 
-    </form>
+            </form>
+        </article>
+    </section>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
