@@ -437,6 +437,7 @@ function checkEnemies(number) {
 		{
 			enemies[i].placeAt(0,i);
 			player.score+=1000;
+			enemies[i].alive=false;
 		}
 	}
 
@@ -448,6 +449,7 @@ function checkAlly(number) {
 	{
 		ally.placeAt(0,1);
 		player.score-=1500;
+		ally.alive=false;
 	}
 }
 
