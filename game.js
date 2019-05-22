@@ -633,7 +633,6 @@ function drawGame()
 			 player.tileFrom[1]>0 &&
 			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
 			player.tileTo[1]-= 1;
-			enemies[1].tileTo[1]-=1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
