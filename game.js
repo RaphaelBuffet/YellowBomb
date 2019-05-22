@@ -444,7 +444,12 @@ function checkEnemies(number) {
 			enemies[i].alive=false;
 		}
 	}
-
+	for (var i=0;i<enemies.length;i++) {
+		if(enemies[i].alive){
+			return;
+		}
+	}
+	console.log("You win"); // la tu peux mettre ta fin de victoire a la place
 }
 
 
@@ -461,70 +466,76 @@ function move() {
 
 	var random;
 
-	for (var i=0;i<enemies.length;i++){
-		random=Math.floor(Math.random()*4);
-		if (enemies[i].alive){
+	for (var i=0;i<enemies.length;i++) {
+		random = Math.floor(Math.random() * 4);
+		if (!enemies[i].processMovement(Date.now())) {
+			if (enemies[i].alive) {
+				switch (random) {
+					case 0:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(ally.tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
+							enemies[i].tileTo[1] -= 1;
+						}
+						break;
+					case 1:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(player.tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
+							enemies[i].tileTo[1] += 1;
+						}
+						break;
+					case 2:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(player.tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
+							enemies[i].tileTo[0] -= 1;
+						}
+						break;
+					case 3:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(ally.tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
+							enemies[i].tileTo[0] += 1;
+						}
+						break;
+				}
+				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
+					enemies[i].timeMoved = Date.now();
+				}
+			}
+
+		}
+	}
+	if (ally.alive) {
+		random = Math.floor(Math.random() * 4);
+		if (!ally.processMovement(Date.now())) {
 			switch (random) {
 				case 0:
-					if(enemies[i].tileFrom[1]>0 &&
-						gameMap[toIndex(ally.tileFrom[0], enemies[i].tileFrom[1]-1)]===1){
-						enemies[i].tileTo[1]-= 1;
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(ally.tileFrom[0], ally.tileFrom[1] - 1)] === 1) {
+						ally.tileTo[1] -= 1;
 					}
 					break;
 				case 1:
-					if(enemies[i].tileFrom[1]>0 &&
-						gameMap[toIndex(player.tileFrom[0], enemies[i].tileFrom[1]+1)]===1) {
-						enemies[i].tileTo[1] += 1;
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(player.tileFrom[0], ally.tileFrom[1] + 1)] === 1) {
+						ally.tileTo[1] += 1;
 					}
 					break;
 				case 2:
-					if(enemies[i].tileFrom[1]>0 &&
-						gameMap[toIndex(player.tileFrom[0]-1, enemies[i].tileFrom[1])]===1){
-						enemies[i].tileTo[0]-= 1;
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(player.tileFrom[0] - 1, ally.tileFrom[1])] === 1) {
+						ally.tileTo[0] -= 1;
 					}
 					break;
 				case 3:
-					if(enemies[i].tileFrom[1]>0 &&
-						gameMap[toIndex(ally.tileFrom[0]+1, enemies[i].tileFrom[1])]===1) {
-						enemies[i].tileTo[0] += 1;
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(ally.tileFrom[0] + 1, ally.tileFrom[1])] === 1) {
+						ally.tileTo[0] += 1;
 					}
 					break;
 			}
-			if(enemies[i].tileFrom[0]!==enemies[i].tileTo[0] || enemies[i].tileFrom[1]!==enemies[i].tileTo[1])
-			{ enemies[i].timeMoved = currentFrameTime; }
+			if (ally.tileFrom[0] !== ally.tileTo[0] || ally.tileFrom[1] !== ally.tileTo[1]) {
+				ally.timeMoved = Date.now();
+			}
 		}
-
-	}
-	if (ally.alive){
-		random=Math.floor(Math.random()*4);
-		switch (random) {
-			case 0:
-				if(ally.tileFrom[1]>0 &&
-					gameMap[toIndex(ally.tileFrom[0], ally.tileFrom[1]-1)]===1){
-					ally.tileTo[1]-= 1;
-				}
-				break;
-			case 1:
-				if(ally.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0], ally.tileFrom[1]+1)]===1) {
-					ally.tileTo[1] += 1;
-				}
-				break;
-			case 2:
-				if(ally.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0]-1, ally.tileFrom[1])]===1){
-					ally.tileTo[0]-= 1;
-				}
-				break;
-			case 3:
-				if(ally.tileFrom[1]>0 &&
-					gameMap[toIndex(ally.tileFrom[0]+1, ally.tileFrom[1])]===1) {
-					ally.tileTo[0] += 1;
-				}
-				break;
-		}
-		if(ally.tileFrom[0]!==ally.tileTo[0] || ally.tileFrom[1]!==ally.tileTo[1])
-		{ ally.timeMoved = currentFrameTime; }
 	}
 
 
