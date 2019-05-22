@@ -497,10 +497,12 @@ function move() {
 setInterval(() => {
 		random=Math.floor(Math.random()*5);
 
+			/*
+			random=Math.floor(Math.random()*5);
 			switch (random) {
 				case 0: if(player.tileFrom[1]>0 &&
 					gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
-					player.tileTo[1]-= 1;
+					//player.tileTo[1]-= 1;
 					player.score += 100;
 				}
 					break;
@@ -527,6 +529,8 @@ setInterval(() => {
 					player.score+=100000000
 					break;
 			}
+			*/
+
 			move();
 }, 1500);
 
