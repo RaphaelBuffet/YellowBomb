@@ -197,6 +197,52 @@ function playerNameSelection()
 	player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
 }
 
+function recordScore(){
+    // Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
+    let score = localStorage.getItem("score");
+    if(!score)
+    {
+        score = [];
+    }
+    else
+    {
+        score = JSON.parse(score); //conversion le json en objet pour le local
+    }
+    score.push({
+        name: player.name,
+        score: player.score,
+        date: new Date(),
+        country: {
+            name: player.country.name,
+            code: player.country.code
+        }
+
+    });
+    console.log(JSON.stringify(score));
+    localStorage.setItem("score", JSON.stringify(score));
+    console.log("Player Dead");
+    //player.placeAt(0,0);
+}
+
+// affiche un écran à la partie terminée (Sam)
+function gameOver(win)
+{
+    var image = new Image();
+
+    // Si on a gagné, on affiche l'écran de victoire
+    if(win)
+    {
+        image.src = "game/ressources/images/victoryScreen.jpg"
+        document.getElementById("game").replaceWith(image);
+    }
+    // Si on a perdu, on affiche l'écran de défaite
+    else if (!win)
+    {
+        image.src = "game/ressources/images/gameoverScreen.jpg"
+        document.getElementById("game").replaceWith(image);
+    }
+}
+
 //prépare l'explosion (loan)
 function startExplosion(x,y) {
 	let boom = false;
@@ -234,6 +280,10 @@ function startExplosion(x,y) {
 			explosion(x, y);
 		}
 	}
+
+
+
+
 
 	//Gestion de l'explosion (loan)
 	function explosion(x, y) {
@@ -278,51 +328,9 @@ function startExplosion(x,y) {
 			}
 		}
 
-		function recordScore(){
-			// Ici partie terminée, tu dois prendre le player.score et l'enregistrer et proposer une nouvelle partie
-			let score = localStorage.getItem("score");
-			if(!score)
-			{
-				score = [];
-			}
-			else
-			{
-				score = JSON.parse(score); //conversion le json en objet pour le local
-			}
-			score.push({
-				name: player.name,
-				score: player.score,
-				date: new Date(),
-				country: {
-					name: player.country.name,
-					code: player.country.code
-				}
 
-			});
-			console.log(JSON.stringify(score));
-			localStorage.setItem("score", JSON.stringify(score));
-			console.log("Player Dead");
-			//player.placeAt(0,0);
-		}
 
-		// affiche un écran à la partie terminée (Sam)
-		function gameOver(win)
-		{
-			var image = new Image();
 
-			// Si on a gagné, on affiche l'écran de victoire
-			if(win)
-			{
-				image.src = "game/ressources/images/victoryScreen.jpg"
-				document.getElementById("game").replaceWith(image);
-			}
-			// Si on a perdu, on affiche l'écran de défaite
-			else if (!win)
-			{
-				image.src = "game/ressources/images/gameoverScreen.jpg"
-				document.getElementById("game").replaceWith(image);
-			}
-		}
 
 		//Suivant ce que touche l'explosion (loan)
 		function extracted(direction, sprite, isLastSprite)
@@ -480,7 +488,8 @@ function checkEnemies(number) {
 			return;
 		}
 	}
-	console.log("You win"); // la tu peux mettre ta fin de victoire a la place
+	recordScore();
+	gameOver(true); // la tu peux mettre ta fin de victoire a la place
 }
 
 
@@ -576,42 +585,12 @@ function move() {
 
 setInterval(() => {
 		random=Math.floor(Math.random()*5);
-
-			/*
-			random=Math.floor(Math.random()*5);
-			switch (random) {
-				case 0: if(player.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
-					//player.tileTo[1]-= 1;
-					player.score += 100;
-				}
-					break;
-				case 1: if(player.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
-					player.tileTo[1]+= 1;
-					player.score += 10000;
-				}
-					break;
-				case 2: if(player.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]===1) {
-					player.tileTo[0]-= 1;
-					player.score += 1000000;
-				}
-					break;
-				case 3: if(player.tileFrom[1]>0 &&
-					gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1) {
-					player.tileTo[0]+= 1;
-					player.score += 1;
-				}
-					break;
-				case 4:
-					player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
-					player.score+=100000000
-					break;
-			}
-			*/
-
 			move();
+			for(var i=0;i<enemies.length;i++){
+			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
+                    recordScore();
+                }
+            }
 }, 1500);
 
 function drawGame()
