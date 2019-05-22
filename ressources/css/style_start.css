@@ -346,6 +346,11 @@ body > main > section > article > table tfoot .links a{
         width: 45px;
         height: 45px;
     }
+    ul {
+        list-style:none;
+        margin-left:0;
+        padding-left:0;
+    }
 
     .commentZone
     {

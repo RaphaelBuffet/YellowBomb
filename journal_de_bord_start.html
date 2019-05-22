@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="fr">
 <head>
     <title>624-2 - HTML/CSS/JavaScript</title>
     <meta charset="utf-8">
@@ -13,7 +13,7 @@
     <nav>
         <ul>
             <li class="hamburger">
-                <img src="ressources/images/hamburger_icon.svg">
+                <img src="ressources/images/hamburger_icon.svg" alt="hamburger"/>
             </li>
             <li>
                 <a href="description_start.html">Description</a>
@@ -51,8 +51,11 @@
                 <h2>Journal de Bord</h2>
                 <p>Par Loan Buffet le 14/03/2019 à 00:00</p>
             </header>
+
             <table>
+                <!-- <caption> Journal de bord </caption> -->
                 <thead>
+
                     <td>Date</td>
                     <td>Tâches effectuées</td>
                     <td>Personne en charge</td>
@@ -93,16 +96,240 @@
                     <td>Attribuation des rôles </td>
                     <td>Loan Buffet</td>
                 </tr>
+=======
+                    <tr>
+                        <th>Date</th>
+                        <th>Tâches effectuée</th>
+                        <th>Personne en charge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>28.02.2019</td>
+                        <td>Attribution des rôles </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>28.02.2019</td>
+                        <td>Description du jeu + mokup du plateau de jeux</td>
+                        <td>Samuel Pinto</td>
+                    </tr>
+                    <tr>
+                        <td>10.03.2019</td>
+                        <td>Mise en place du git + html (code prof)</td>
+                        <td>Loan et Raphael</td>
+                    </tr>
+                    <tr>
+                        <td>14.03.2019</td>
+                        <td>mise en place d’une base pour le css</td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>13.03.2019</td>
+                        <td>Création des mokup du jeu + Schéma</td>
+                        <td>Raphaël Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>14.03.2019</td>
+                        <td>Création du css </td>
+                        <td>Samuel Pinto</td>
+                    </tr>
+                    <tr>
+                        <td>14.03.2019</td>
+                        <td>
+                                 mise en place du tableau de bord ,
+                            refonte complète du css ,
+                            modification de certaine page html (contenu et balise)
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>14.03.2019</td>
+                        <td>
+                            Création du canevas
+                        </td>
+                        <td>Rapheal Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>15.04.2019</td>
+                        <td>
+                            Création des murs du jeux (via une matrice)
+                        </td>
+                        <td>Samuel Pinto</td>
+                    </tr>
+                    <tr>
+                        <td>15.04.2019</td>
+                        <td>
+                            Recréation d’un système de mouvements
+                        </td>
+                        <td>Samuel Pinto</td>
+                    </tr>
+                    <tr>
+                        <td>20.04.2019</td>
+                        <td>
+                            Création des sprite, design des murs et des obstacles
+                        </td>
+                        <td>Samuel Pinto</td>
+                    </tr>
+                    <tr>
+                        <td>22.04.2019 au 26.04.2019</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    codage de la barre espace pour le personnage.
+                                </li>
+                                <li>
+                                    Mise en place des sprite dans une sorte de numération , mise en place des sprite pour la bombe.
+                                </li>
+                                <li>
+                                    Agrandissement de la partie jeux , pour que le jeux prenne toute la page .
+                                </li>
+                                <li>
+                                    Agrandissement des tailles et mise en place de 20 tuiles au lieu de 19.
+                                </li>
+                                <li>
+                                    Mise en place de l'événement , mise en place du timer , mise en place de l'explosion lors de la fin du timer.
+                                </li>
+                                <li>
+                                    Mise en place de 'explosion , de la mort (dans une console tout bidon') , mise en place réfléchi de la bombe en dynamique en cas d'ajout de Bonus (plus bombe , grandeur  de l'explosion)
+                                </li>
+                                <li>
+                                    Commentaire
+                                </li>
+                                <li>
+                                    Gestion de la fin de l'explosion , bâtiment , check player , mur cassable , ... ou encore le canevas.
+                                </li>
+                                <li>
+                                    Remplacement des objet par l'explosion si cassable sinon ne traverse pas , et a la fin apparition du sol
+                                </li>
+                            </ul>
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>22.04.2019 au 26.04.2019</td>
+                        <td>
+                               optimisation du code
+                                test du code
+                                push du code sur le git
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>19.05.2019</td>
+                        <td>
+                            Insertion de:
+                             un prompt pour insérer un nom de joueur
+                        </td>
+                        <td>Samuel</td>
+                    </tr>
+                    <tr>
+                        <td>19.05.2019</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    changement des sprite de la bombe, pour ne pas devoir gérer gauche droite.
+                                </li>
+                                <li>
+                                    optimisation de la bombe (animation) , elle prend désormais moins de ressource car elle ne tourne plus.
+                                </li>
+                            </ul>
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>20.05.2019</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    ajout des score en dynamique (json avec le local)
+                                </li>
+                                <li>
+                                    ajout de la géolocalisation avec le score
+                                </li>
+                                <li>
+                                    correction de la bombe (traversement)
+                                </li>
+                            </ul>
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>21.05.2019</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    intégration du code des 2 autres
+                                </li>
+                                <li>
+                                    optimisation de celle-ci
+                                </li>
+                                <li>
+                                    résolution des bugs
+                                </li>
+                                <li>
+                                    alignement des score
+                                </li>
+                                <li>
+                                    correction de petits bug d’affichages
+                                </li>
+                            </ul>
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td>22.05.2019</td>
+                        <td>
+                            mise à jour du doc drive
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>Loan Buffet</td>
+                    </tr>
                 </tbody>
                 <tfoot>
                 <tr>
                     <td colspan="4">
-                        <div class="links"><a href="#">&laquo;</a> <a class="active" href="#">1</a> <a href="#">2</a> <a href="#">3</a> <a href="#">4</a> <a href="#">&raquo;</a></div>
+                        <div> dernière mise à jour le 22.05.2019  </div>
                     </td>
                 </tr>
                 </tfoot>
             </table>
-
+        </br>
         </article>
     </section>
     <!-- >Fin zone pour votre contenu -->
@@ -110,11 +337,11 @@
 
 <footer>
     <div>
-        <img id="logoBombe" src="ressources/images/logoBomb.png">
+        <img id="logoBombe" src="ressources/images/logoBomb.png" alt="logo d'une bombe">
     </div>
     <div></div>
     <div>
-        <img id="logoHES" src="ressources/images/logo.png">
+        <img id="logoHES" src="ressources/images/logo.png" alt="Logo de la haute école spécialisée de la suisse occidentale">
     </div>
 </footer>
 

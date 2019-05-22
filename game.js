@@ -23,14 +23,16 @@ class Player extends Character{
         this.name = "";
     }
 }
+var random;
 
 class Ennemy extends Character
 {
 	constructor(positionx,positiony){
 		super();
-		this.tileFrom	= [(positionx-10)/62+1],[(positiony-10)/62+1];
-		this.tileTo		= [(positionx-10)/62+1],[(positiony-10)/62+1];
-		this.position	= [tileW+positionx,tileH+positiony];
+		this.tileFrom	= [positionx, positiony];
+		this.tileTo		= [positionx, positiony];
+		this.position	= [tileW+(positionx-1)*62+10,tileH+(positiony-1)*62+10];
+		this.alive		= true;
 
 	}
 }
@@ -39,10 +41,10 @@ class Ally extends Character
 {
 	constructor() {
 		super();
-		this.tileFrom = [1, 1];
-		this.tileTo = [1, 1];
-		this.timeMoved = 0;
+		this.tileFrom = [3, 3];
+		this.tileTo = [3, 3];
 		this.position = [tileW + 130, tileH + 130];
+		this.alive		= true;
 	}
 }
 
@@ -67,9 +69,10 @@ var gameMap = maps[0];
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
-var ennemy3 = new Ennemy(1064,10);
-var ennemy1 = new Ennemy(1064,630);
-var ennemy2 = new Ennemy(10,630);
+
+var enemies = [new Ennemy(1,11),new Ennemy(18,11),new Ennemy(18,1)]
+
+
 var ally = new Ally();
 imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
 imageCharacter.ally.src = "game/ressources/images/ally.png";
@@ -240,6 +243,7 @@ function startExplosion(x,y) {
 		gameMap[bombPosition] = SPRITE.explosion0; // on remplace le sprite de la bombe par l'explosion
 		explosionPosition.push(bombPosition); //dit qu'on a modif le terrain
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
+        checkIA(bombPosition);
 		let pos = {};
 
 		for (let i = 1; i <= player.bomb.power; i++) {
@@ -298,6 +302,7 @@ function startExplosion(x,y) {
 			console.log(JSON.stringify(score));
 			localStorage.setItem("score", JSON.stringify(score));
 			console.log("Player Dead");
+			//player.placeAt(0,0);
 		}
 
 		// affiche un écran à la partie terminée (Sam)
@@ -333,6 +338,7 @@ function startExplosion(x,y) {
 					player.score+= 73;
 					doExplosion(pos[direction], SPRITE.explosion2);
 					checkPlayer(pos[direction]);
+					checkIA(pos[direction])
 					stop[direction] = true;
 				}
 				else if ((gameMap[pos[direction]] === SPRITE.emptyGround ))
@@ -341,12 +347,14 @@ function startExplosion(x,y) {
 					{
 						doExplosion(pos[direction], SPRITE.explosion2);
 						checkPlayer(pos[direction]);
+                        checkIA(pos[direction])
 						stop[direction] = true;
 					}
 					else
 					{
 						doExplosion(pos[direction], sprite);
 						checkPlayer(pos[direction]);
+                        checkIA(pos[direction])
 					}
 				}
 			}
@@ -437,11 +445,8 @@ function checkIA(number) {
 	checkCharacter(ally, number, -1500);
 
  */
-	checkEnnemy1(number);
-	checkEnnemy2(number);
-	checkEnnemy3(number);
-
-	checkAlly(number)
+	checkEnemies(number);
+	checkAlly(number);
 }
 
 function checkCharacter(ennemy, number, point) {
@@ -452,26 +457,21 @@ function checkCharacter(ennemy, number, point) {
 	}
 }
 
-function checkEnnemy1(number) {
-	if(ennemy1.tileFrom[1]*mapW + ennemy1.tileFrom[0] === number)
-	{
-		ennemy1.placeAt(0,0);
-		player.score+=1000;
+function checkEnemies(number) {
+	for (var i=0;i<enemies.length;i++){
+		if(enemies[i].tileFrom[1]*mapW + enemies[i].tileFrom[0] === number)
+		{
+			enemies[i].placeAt(i,0);
+			player.score+=1000;
+			enemies[i].alive=false;
+		}
 	}
-}
-function checkEnnemy2(number) {
-	if(ennemy2.tileFrom[1]*mapW + ennemy2.tileFrom[0] === number)
-	{
-		ennemy2.placeAt(1,0);
-		player.score+=1000;
+	for (var i=0;i<enemies.length;i++) {
+		if(enemies[i].alive){
+			return;
+		}
 	}
-}
-function checkEnnemy3(number) {
-	if(ennemy3.tileFrom[1]*mapW + ennemy3.tileFrom[0] === number)
-	{
-		ennemy3.placeAt(2,0);
-		player.score+=1000;
-	}
+	console.log("You win"); // la tu peux mettre ta fin de victoire a la place
 }
 
 
@@ -480,8 +480,130 @@ function checkAlly(number) {
 	{
 		ally.placeAt(0,1);
 		player.score-=1500;
+		ally.alive=false;
 	}
 }
+
+function move() {
+
+	var random;
+
+	for (var i=0;i<enemies.length;i++) {
+		random = Math.floor(Math.random() * 4);
+		if (!enemies[i].processMovement(Date.now())) {
+			if (enemies[i].alive) {
+				switch (random) {
+					case 0:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(ally.tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
+							enemies[i].tileTo[1] -= 1;
+						}
+						break;
+					case 1:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(player.tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
+							enemies[i].tileTo[1] += 1;
+						}
+						break;
+					case 2:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(player.tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
+							enemies[i].tileTo[0] -= 1;
+						}
+						break;
+					case 3:
+						if (enemies[i].tileFrom[1] > 0 &&
+							gameMap[toIndex(ally.tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
+							enemies[i].tileTo[0] += 1;
+						}
+						break;
+				}
+				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
+					enemies[i].timeMoved = Date.now();
+				}
+			}
+
+		}
+	}
+	if (ally.alive) {
+		random = Math.floor(Math.random() * 4);
+		if (!ally.processMovement(Date.now())) {
+			switch (random) {
+				case 0:
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(ally.tileFrom[0], ally.tileFrom[1] - 1)] === 1) {
+						ally.tileTo[1] -= 1;
+					}
+					break;
+				case 1:
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(player.tileFrom[0], ally.tileFrom[1] + 1)] === 1) {
+						ally.tileTo[1] += 1;
+					}
+					break;
+				case 2:
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(player.tileFrom[0] - 1, ally.tileFrom[1])] === 1) {
+						ally.tileTo[0] -= 1;
+					}
+					break;
+				case 3:
+					if (ally.tileFrom[1] > 0 &&
+						gameMap[toIndex(ally.tileFrom[0] + 1, ally.tileFrom[1])] === 1) {
+						ally.tileTo[0] += 1;
+					}
+					break;
+			}
+			if (ally.tileFrom[0] !== ally.tileTo[0] || ally.tileFrom[1] !== ally.tileTo[1]) {
+				ally.timeMoved = Date.now();
+			}
+		}
+	}
+
+
+}
+
+//gestion des mouvement automatique doit etre mis avant le refresh de frame sinon il démarre plusieurs fois la methode
+
+setInterval(() => {
+		random=Math.floor(Math.random()*5);
+
+			/*
+			random=Math.floor(Math.random()*5);
+			switch (random) {
+				case 0: if(player.tileFrom[1]>0 &&
+					gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
+					//player.tileTo[1]-= 1;
+					player.score += 100;
+				}
+					break;
+				case 1: if(player.tileFrom[1]>0 &&
+					gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]+1)]===1) {
+					player.tileTo[1]+= 1;
+					player.score += 10000;
+				}
+					break;
+				case 2: if(player.tileFrom[1]>0 &&
+					gameMap[toIndex(player.tileFrom[0]-1, player.tileFrom[1])]===1) {
+					player.tileTo[0]-= 1;
+					player.score += 1000000;
+				}
+					break;
+				case 3: if(player.tileFrom[1]>0 &&
+					gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1) {
+					player.tileTo[0]+= 1;
+					player.score += 1;
+				}
+					break;
+				case 4:
+					player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
+					player.score+=100000000
+					break;
+			}
+			*/
+
+			move();
+}, 1500);
 
 function drawGame()
 {
@@ -498,6 +620,12 @@ function drawGame()
 	}
 	else { frameCount++; }
 
+
+
+
+
+
+
 	// Movement controls --> based on processMovement
 	if(!player.processMovement(currentFrameTime))
 	{
@@ -505,6 +633,7 @@ function drawGame()
 			 player.tileFrom[1]>0 &&
 			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
 			player.tileTo[1]-= 1;
+			enemies[1].tileTo[1]-=1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
@@ -524,7 +653,7 @@ function drawGame()
 		//Si l'espace est appuier (loan)
 		else if(keysDown[32]){
 		player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
-		keysDown[32] = false;
+			keysDown[32] = false;
 	}
 
 		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
@@ -532,6 +661,7 @@ function drawGame()
 
 
 	}
+
 
 	// Define the colors/sprites of the blocks
 
@@ -588,17 +718,12 @@ function drawGame()
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
 	//Rapheal ennemi
-	ctx.drawImage(imageCharacter.ennemy, ennemy1.position[0], ennemy1.position[1], ennemy1.dimensions[0], ennemy1.dimensions[1]);
-	ctx.fillRect(ennemy1.position[0], ennemy1.position[1],
-		ennemy1.dimensions[0], ennemy1.dimensions[1]);
 
-	ctx.drawImage(imageCharacter.ennemy, ennemy2.position[0], ennemy2.position[1], ennemy2.dimensions[0], ennemy2.dimensions[1]);
-	ctx.fillRect(ennemy2.position[0], ennemy2.position[1],
-		ennemy2.dimensions[0], ennemy2.dimensions[1]);
-
-	ctx.drawImage(imageCharacter.ennemy, ennemy3.position[0], ennemy3.position[1], ennemy3.dimensions[0], ennemy3.dimensions[1]);
-	ctx.fillRect(ennemy3.position[0], ennemy3.position[1],
-		ennemy3.dimensions[0], ennemy3.dimensions[1]);
+	for(var i=0;i<enemies.length;i++){
+		ctx.drawImage(imageCharacter.ennemy, enemies[i].position[0], enemies[i].position[1], enemies[i].dimensions[0], enemies[i].dimensions[1]);
+		ctx.fillRect(enemies[i].position[0], enemies[i].position[1],
+			enemies[i].dimensions[0], enemies[i].dimensions[1]);
+	}
 
 	ctx.drawImage(imageCharacter.ally, ally.position[0], ally.position[1], ally.dimensions[0], ally.dimensions[1]);
 	ctx.fillRect(ally.position[0], ally.position[1],
@@ -620,6 +745,10 @@ function drawGame()
 	ctx.font = "25px arial";
 	ctx.fillText("Joueur: " + playerName, 10, 20);*/
 
+
+
+
 	lastFrameTime = currentFrameTime;
 	requestAnimationFrame(drawGame);
+
 }
