@@ -29,9 +29,9 @@ class Ennemy extends Character
 {
 	constructor(positionx,positiony){
 		super();
-		this.tileFrom	= [positionx/62+1, positiony/62+1];
-		this.tileTo		= [positionx/62+1, positiony/62+1];
-		this.position	= [tileW+positionx,tileH+positiony];
+		this.tileFrom	= [positionx, positiony];
+		this.tileTo		= [positionx, positiony];
+		this.position	= [tileW+(positionx-1)*62+10,tileH+(positiony-1)*62+10];
 		this.alive		= true;
 
 	}
@@ -70,7 +70,7 @@ var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
 
-var enemies = [new Ennemy(1064,10),new Ennemy(1064,630),new Ennemy(10,630)]
+var enemies = [new Ennemy(1,11),new Ennemy(18,11),new Ennemy(18,1)]
 
 
 var ally = new Ally();
@@ -241,6 +241,7 @@ function startExplosion(x,y) {
 		gameMap[bombPosition] = SPRITE.explosion0; // on remplace le sprite de la bombe par l'explosion
 		explosionPosition.push(bombPosition); //dit qu'on a modif le terrain
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
+        checkIA(bombPosition);
 		let pos = {};
 
 		for (let i = 1; i <= player.bomb.power; i++) {
@@ -298,7 +299,7 @@ function startExplosion(x,y) {
 			console.log(JSON.stringify(score));
 			localStorage.setItem("score", JSON.stringify(score));
 			console.log("Player Dead");
-			player.placeAt(0,0);
+			//player.placeAt(0,0);
 		}
 
 		//Suivant ce que touche l'explosion (loan)
@@ -315,6 +316,7 @@ function startExplosion(x,y) {
 					player.score+= 73;
 					doExplosion(pos[direction], SPRITE.explosion2);
 					checkPlayer(pos[direction]);
+					checkIA(pos[direction])
 					stop[direction] = true;
 				}
 				else if ((gameMap[pos[direction]] === SPRITE.emptyGround ))
@@ -323,12 +325,14 @@ function startExplosion(x,y) {
 					{
 						doExplosion(pos[direction], SPRITE.explosion2);
 						checkPlayer(pos[direction]);
+                        checkIA(pos[direction])
 						stop[direction] = true;
 					}
 					else
 					{
 						doExplosion(pos[direction], sprite);
 						checkPlayer(pos[direction]);
+                        checkIA(pos[direction])
 					}
 				}
 			}
@@ -435,7 +439,7 @@ function checkEnemies(number) {
 	for (var i=0;i<enemies.length;i++){
 		if(enemies[i].tileFrom[1]*mapW + enemies[i].tileFrom[0] === number)
 		{
-			enemies[i].placeAt(0,i);
+			enemies[i].placeAt(i,0);
 			player.score+=1000;
 			enemies[i].alive=false;
 		}
@@ -596,7 +600,7 @@ function drawGame()
 			 player.tileFrom[1]>0 &&
 			 gameMap[toIndex(player.tileFrom[0], player.tileFrom[1]-1)]===1) {
 			player.tileTo[1]-= 1;
-			enemies[i].tileTo[1]-=1;
+			enemies[1].tileTo[1]-=1;
 		}
 		else if(keysDown[40] &&
 						player.tileFrom[1]<(mapH-1) &&
