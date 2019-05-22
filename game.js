@@ -589,6 +589,7 @@ setInterval(() => {
 			for(var i=0;i<enemies.length;i++){
 			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
                     recordScore();
+                    gameOver(false);
                 }
             }
 }, 1500);
