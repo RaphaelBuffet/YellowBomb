@@ -43,7 +43,7 @@ class Ally extends Character
 		super();
 		this.tileFrom = [3, 3];
 		this.tileTo = [3, 3];
-		this.position = [tileW + 130, tileH + 130];
+		this.position = [tileW + 134, tileH + 134];
 		this.alive		= true;
 	}
 }
@@ -545,7 +545,7 @@ function move(i) {
 		}
 
 
-	if (ally.alive) {
+	if (ally.alive && i===2) {
 		random = Math.floor(Math.random() * 4);
 		if (!ally.processMovement(Date.now())) {
 			switch (random) {
@@ -601,6 +601,9 @@ setInterval(() => {
 
 function drawGame()
 {
+	if(player.score<0){
+		player.score = 0;
+	}
 	if(ctx==null) { return; }
 
 	var currentFrameTime = Date.now();
