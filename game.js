@@ -494,11 +494,11 @@ function checkAlly(number) {
 	}
 }
 
-function move() {
+function move(i) {
 
 	var random;
 
-	for (var i=0;i<enemies.length;i++) {
+
 		random = Math.floor(Math.random() * 4);
 		if (!enemies[i].processMovement(Date.now())) {
 			if (enemies[i].alive) {
@@ -508,28 +508,28 @@ function move() {
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
 							enemies[i].tileTo[1] -= 1;
 						}
-						else {move()}
+						else {move(i)}
 						break;
 					case 1:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
 							enemies[i].tileTo[1] += 1;
 						}
-						else {move()}
+						else {move(i)}
 						break;
 					case 2:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] -= 1;
 						}
-						else {move()}
+						else {move(i)}
 						break;
 					case 3:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] += 1;
 						}
-						else {move()}
+						else {move(i)}
 						break;
 				}
 				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
@@ -538,7 +538,7 @@ function move() {
 			}
 
 		}
-	}
+
 
 	if (ally.alive) {
 		random = Math.floor(Math.random() * 4);
@@ -581,8 +581,10 @@ function move() {
 //gestion des mouvement automatique doit etre mis avant le refresh de frame sinon il démarre plusieurs fois la methode
 
 setInterval(() => {
-		random=Math.floor(Math.random()*5);
-			move();
+		for(var i=0;i<enemies.length;i++){
+			move(i);
+		}
+
 			for(var i=0;i<enemies.length;i++){
 			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
                     recordScore();
