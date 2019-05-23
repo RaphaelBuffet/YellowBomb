@@ -1,5 +1,6 @@
 sounds.welcome.play();
 
+
 //Loan création de nos personnage
 class Character
 {
@@ -20,13 +21,14 @@ class Player extends Character{
         this.tileTo = [1, 1];
         this.timeMoved = 0;
         this.position = [tileW + 10, tileH + 10];
-        this.bomb = {power: 5, number: 0, maxNumber: 5}; //defini l'explosion , nbr base , nbr max
+        this.bomb = {power: 3, number: 0, maxNumber: 2}; //defini l'explosion , nbr base , nbr max . bomb
         this.score = 1000;
         this.country = {};
         this.name = "";
+        this.dead = false;
     }
 }
-// ennemi parametre (Raphael)
+// ennemi class (Raphael)
 class Ennemy extends Character
 {
 	constructor(positionx,positiony){
@@ -38,7 +40,7 @@ class Ennemy extends Character
 
 	}
 }
-// allié parametre (Raphael)
+// allié class (Raphael)
 class Ally extends Character
 {
 	constructor() {
@@ -49,7 +51,6 @@ class Ally extends Character
 		this.alive		= true;
 	}
 }
-
 
 // context (Samuel)
 var ctx = null;
@@ -62,7 +63,7 @@ barrierImage.src = "game/ressources/images/box.png";
 
 // choose of the map (Samuel)
 var gameMap = maps[0];
-var diff = 0;
+var diff = "rien";
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
@@ -77,7 +78,7 @@ var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
 
 // controls (Samuel)
 var keysDown = {
-	32 : false, // espace
+	32 : false, // espace (loan)
 	37 : false,
 	38 : false,
 	39 : false,
@@ -91,13 +92,12 @@ selectionCharacter.addEventListener("dragenter", dragenter);
 selectionCharacter.addEventListener("drop", drop);
 const avatars = document.getElementById("avatars");
 const childAv = avatars.getElementsByTagName("img");
-console.log(childAv);
+
 for(let i =0; i<childAv.length;i++){
-	let child = childAv[i];
-	console.log(child);
-	child.ondragstart = drag;
-	child.draggable = true;
+	childAv[i].ondragstart = drag;
+	childAv[i].draggable = true;
 }
+
 
 function drag(ev) {
 	ev.dataTransfer.setData("text", ev.target.id);
@@ -111,7 +111,7 @@ function dragenter(e) {
 }
 function drop(ev) {
 	ev.preventDefault();
-	var data = ev.dataTransfer.getData("text");
+	let data = ev.dataTransfer.getData("text");
 	ev.target.appendChild(document.getElementById(data));
 	imageCharacter.player = avatarImage[SPRITE_AVATAR[data]];
 	if(ev.dataTransfer.items !== null)
@@ -120,9 +120,22 @@ function drop(ev) {
 	}
 }
 // Drag and drop -- Fin (Samuel)
+playerNameSelection();
+doGeolocalisation();
+
+//Loan , la géolocalisation
+
+function doGeolocalisation() {
+	if (navigator.geolocation) // Si le navigateur prend en compte la géolocalisation
+	{
+		navigator.geolocation.getCurrentPosition(successGeoloc, failedGeoloc); //callback une fonction qui est appeler en retour
+	} else {
+		failedGeoloc();
+	}
+}
 
 function successGeoloc(coord) {
-	var xhttp = new XMLHttpRequest(); //créa une requete xml
+	let xhttp = new XMLHttpRequest(); //créa une requete xml
 	xhttp.onreadystatechange = function () { //callback : quand on a un changement d'état de xhttp (quand notre requete est reçu)
 		// test du statut de retour de la requête AJAX
 		if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0)) { // 4 = requête terminée , 200 ok , 0 rien
@@ -140,22 +153,10 @@ function failedGeoloc(){
 	player.country.code = "EU";
 }
 
-playerNameSelection();
-doGeolocalisation();
-
-//Loan , la géolocalisation
-
-function doGeolocalisation() {
-	if (navigator.geolocation) // Si le navigateur prend en compte la géolocalisation
-	{
-		navigator.geolocation.getCurrentPosition(successGeoloc, failedGeoloc); //callback une fonction qui est appeler en retour
-	} else {
-		failedGeoloc();
-	}
-}
+//fin géo
 
 // Placement of the character (sam)
-Character.prototype.placeAt = function(x, y)
+Character.prototype.placeAt = function (x, y)  //fonction anonyme
 {
 	this.tileFrom	= [x,y];
 	this.tileTo		= [x,y];
@@ -187,6 +188,7 @@ Character.prototype.processMovement = function(t)
 		if(this.tileTo[1] !== this.tileFrom[1])
 		{
 			 diff = (tileH / this.delayMove) * (t-this.timeMoved);
+			 console.log(diff);
 			this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
 		}
 
@@ -233,8 +235,8 @@ function recordScore(){
 // affiche un écran à la partie terminée (Samuel)
 function gameOver(win)
 {
-    var image = new Image();
-
+    let image = new Image();
+	player.dead = true;
     // Si on a gagné, on affiche l'écran de victoire
     if(win)
     {
@@ -395,7 +397,7 @@ function toIndex(x, y)
 // fonction qui permet de ne pas aller sur une case occuper par un ennemi empeche la mort quoi ^^ (Raphael)
 function IsCollition(x, y)
 {
-	for(var i=0;i<enemies.length;i++){
+	for(let i=0;i<enemies.length;i++){
 		if(enemies[i].tileFrom[0]===x && enemies[i].tileFrom[1]===y){
 			return false;
 		}
@@ -439,7 +441,7 @@ window.onload = function()
 };
 
 // ajout des methode pour replacer les ia si il meurt en dehors de l 'écran
-Ennemy.prototype.placeAt = function(x, y)
+Ennemy.prototype.placeAt = function (x, y)
 {
 	this.tileFrom	= [x,y];
 	this.tileTo		= [x,y];
@@ -462,7 +464,7 @@ function checkIA(number) {
 
 // si l'ennemi est toucher par la bombe/explosion il meurt
 function checkEnemies(number) {
-	for (var i=0;i<enemies.length;i++){
+	for (let i=0;i<enemies.length;i++){
 		if(enemies[i].tileFrom[1]*mapW + enemies[i].tileFrom[0] === number)
 		{
 			enemies[i].placeAt(i,0);
@@ -472,7 +474,7 @@ function checkEnemies(number) {
 		}
 	}
 	//controle si tous les ennemi son mort fin de partie
-	for (var i=0;i<enemies.length;i++) {
+	for (let i=0;i<enemies.length;i++) {
 		if(enemies[i].alive){
 			return;
 		}
@@ -494,7 +496,7 @@ function checkAlly(number) {
 // gestion du mouvement automatique des ia aléatoire (Raphael)
 function move(i) {
 
-	var random;
+	let random;
 		random = Math.floor(Math.random() * 4);
 		if (!enemies[i].processMovement(Date.now())) {
 			if (enemies[i].alive) {
@@ -582,11 +584,11 @@ function move(i) {
 
 setInterval(() => {
 	player.score-=1;
-		for(var i=0;i<enemies.length;i++){
+		for(let i=0;i<enemies.length;i++){
 			move(i);
 		}
 		// si l'ennemi nous asute dessus nous mourront (Raphael)
-		for(var i=0;i<enemies.length;i++){
+		for(let i=0;i<enemies.length;i++){
 			if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
 				recordScore();
 				gameOver(false);
@@ -602,9 +604,9 @@ function drawGame()
 	}
 	if(ctx==null) { return; }
 
-	var currentFrameTime = Date.now();
+	let currentFrameTime = Date.now();
 
-	var sec = Math.floor(Date.now()/1000);
+	let sec = Math.floor(Date.now()/1000);
 	if(sec!=currentSecond)
 	{
 		currentSecond = sec;
@@ -648,9 +650,9 @@ function drawGame()
 	}
 
 	// Define the colors/sprites of the blocks (Samuel)
-	for(var y = 0; y < mapH; ++y)
+	for(let y = 0; y < mapH; ++y)
 	{
-		for(var x = 0; x < mapW; ++x)
+		for(let x = 0; x < mapW; ++x)
 		{
 			let number = gameMap[((y*mapW)+x)];
 			switch(number)
@@ -672,7 +674,7 @@ function drawGame()
 					ctx.drawImage(buildingImage, x*tileW, y*tileH, tileW, tileH);
 					ctx.fillRect( x*tileW, y*tileH, tileW, tileH);
 					break;
-				/*BOMB*/
+				/*BOMB Loan*/
 				default:
 					if(number > 3 && number <= 10){
 						let img;
@@ -701,7 +703,7 @@ function drawGame()
 	ctx.fillRect(player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	// ajouter graphiquement les ia ennemi (Rapheal)
 
-	for(var i=0;i<enemies.length;i++){
+	for(let i=0;i<enemies.length;i++){
 		ctx.drawImage(imageCharacter.ennemy, enemies[i].position[0], enemies[i].position[1], enemies[i].dimensions[0], enemies[i].dimensions[1]);
 		ctx.fillRect(enemies[i].position[0], enemies[i].position[1],
 			enemies[i].dimensions[0], enemies[i].dimensions[1]);
@@ -726,6 +728,7 @@ function drawGame()
 	ctx.fillText("Joueur: " + playerName, 10, 20);*/
 
 	lastFrameTime = currentFrameTime;
-	requestAnimationFrame(drawGame);
+	if(!player.dead)
+		requestAnimationFrame(drawGame);
 
 }
