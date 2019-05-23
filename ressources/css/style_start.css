@@ -352,10 +352,20 @@ body > main > section > article > table tfoot .links a{
         padding-left:0;
     }
 
+    /*
     .commentZone
     {
         width:140px;
         float:left;
         height:100%;
+    }
+    */
+
+    #submit-form
+    {
+        background: linear-gradient(to bottom, #e08f5e 0%, #da793e 66%, #D66A29 100%);
+        border: #D66A29;
+        width: 75px;
+        height: 25px;
     }
 }

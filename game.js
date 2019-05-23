@@ -23,7 +23,7 @@ class Player extends Character{
         this.name = "";
     }
 }
-// ennemi parametre Raphy
+// ennemi parametre (Raphael)
 class Ennemy extends Character
 {
 	constructor(positionx,positiony){
@@ -35,7 +35,7 @@ class Ennemy extends Character
 
 	}
 }
-// allié parametre Raphy
+// allié parametre (Raphael)
 class Ally extends Character
 {
 	constructor() {
@@ -53,23 +53,23 @@ const imageCharacter = {
     ally: new Image()
 };
 
-// context
+// context (Samuel)
 var ctx = null;
-// unbreakable block image
+// unbreakable block image (Samuel)
 const buildingImage = new Image();
 buildingImage.src = "game/ressources/images/building.png";
-// breakable block image
+// breakable block image (Samuel)
 const barrierImage = new Image();
 barrierImage.src = "game/ressources/images/box.png";
 
-// choose of the map
+// choose of the map (Samuel)
 var gameMap = maps[0];
 
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
 
-//tableau d'ennemi avec en parametre la position et ajout d'un allié Raphy
+//tableau d'ennemi avec en parametre la position et ajout d'un allié (Raphael)
 var enemies = [new Ennemy(1,11),new Ennemy(18,11),new Ennemy(18,1)]
 var ally = new Ally();
 
@@ -82,7 +82,7 @@ imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
 
-// controls
+// controls (Samuel)
 var keysDown = {
 	32 : false, // espace
 	37 : false,
@@ -91,6 +91,7 @@ var keysDown = {
 	40 : false
 };
 
+// Drag and drop -- Début (Samuel)
 const selectionCharacter = document.getElementById("avatarZone");
 selectionCharacter.addEventListener("dragover", dragover);
 selectionCharacter.addEventListener("dragenter", dragenter);
@@ -104,6 +105,7 @@ for(let i =0; i<childAv.length;i++){
 	child.ondragstart = drag;
 	child.draggable = true;
 }
+
 
 function drag(ev) {
 	ev.dataTransfer.setData("text", ev.target.id);
@@ -125,8 +127,7 @@ function drop(ev) {
 		document.getElementById("gameZone").hidden = true;
 	}
 }
-// Méthodes de drag and drop (Sam) -- Fin
-
+// Drag and drop -- Fin (Samuel)
 
 playerNameSelection();
 
@@ -193,7 +194,7 @@ Character.prototype.processMovement = function(t)
 // Methode de selection du nom du joueur (Sam)
 function playerNameSelection()
 {
-	player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom
+	player.name = prompt('Veuillez choisir un nom de joueur'); //le prompt nous demande de choisir un nom (Samuel)
 }
 
 function recordScore(){
@@ -223,7 +224,7 @@ function recordScore(){
     //player.placeAt(0,0);
 }
 
-// affiche un écran à la partie terminée (Sam)
+// affiche un écran à la partie terminée (Samuel)
 function gameOver(win)
 {
     var image = new Image();
@@ -323,10 +324,6 @@ function startExplosion(x,y) {
 			}
 		}
 
-
-
-
-
 		//Suivant ce que touche l'explosion (loan)
 		function extracted(direction, sprite, isLastSprite)
 		{
@@ -385,7 +382,7 @@ function toIndex(x, y)
 {
 	return((y * mapW) + x);
 }
-// fonction qui permet de ne pas aller sur une case occuper par un ennemi empeche la mort quoi ^^ Raphy
+// fonction qui permet de ne pas aller sur une case occuper par un ennemi empeche la mort quoi ^^ (Raphael)
 function IsCollition(x, y)
 {
 	for(var i=0;i<enemies.length;i++){
@@ -475,7 +472,7 @@ function checkEnemies(number) {
 	gameOver(true); // la tu peux mettre ta fin de victoire a la place
 }
 
-// si l'ami est toucher par la bombe/explosion il meurt Raphy
+// si l'ami est toucher par la bombe/explosion il meurt (Raphael)
 function checkAlly(number) {
 	if(ally.tileFrom[1]*mapW + ally.tileFrom[0] === number)
 	{
@@ -484,7 +481,7 @@ function checkAlly(number) {
 		ally.alive=false;
 	}
 }
-// gestion du mouvement automatique des ia aléatoire Raphy
+// gestion du mouvement automatique des ia aléatoire (Raphael)
 function move(i) {
 
 	var random;
@@ -497,7 +494,7 @@ function move(i) {
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
 							enemies[i].tileTo[1] -= 1;
 						}
-						else {move(i)} // si il a pas bouger il tente une autre direction Raphy
+						else {move(i)} // si il a pas bouger il tente une autre direction (Raphael)
 						break;
 					case 1:
 						if (enemies[i].tileFrom[1] > 0 &&
@@ -521,11 +518,11 @@ function move(i) {
 						else {move(i)}
 						break;
 				}
-				//fait bouger graphiquement le personnage Raphy
+				//fait bouger graphiquement le personnage (Raphael)
 				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
 					enemies[i].timeMoved = Date.now();
 				}
-				//si il touche notre ami notre ami meurt RIP Raphy
+				//si il touche notre ami notre ami meurt RIP (Raphael)
 				if(enemies[i].tileFrom[1]===ally.tileFrom[1] && enemies[i].tileFrom[0]===ally.tileFrom[0]){
 					ally.placeAt(0,1);
 					player.score-=1500;
@@ -535,7 +532,7 @@ function move(i) {
 
 		}
 
-// gestion de l'allié par contre lui peux rester sur place Raphy
+// gestion de l'allié par contre lui peux rester sur place (Raphael)
 	if (ally.alive && i===2) {
 		random = Math.floor(Math.random() * 4);
 		if (!ally.processMovement(Date.now())) {
@@ -582,14 +579,14 @@ setInterval(() => {
 			move(i);
 		}
 
-		// si l'ennemi nous asute dessus nous mourront Raphy
+		// si l'ennemi nous asute dessus nous mourront (Raphael)
 			for(var i=0;i<enemies.length;i++){
 			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
                     recordScore();
                     gameOver(false);
                 }
             }
-}, 500); //chaque demi seconde les ia bouges Raphy
+}, 500); //chaque demi seconde les ia bougent (Raphael)
 
 function drawGame()
 {
@@ -609,13 +606,7 @@ function drawGame()
 	}
 	else { frameCount++; }
 
-
-
-
-
-
-
-	// Movement controls --> based on processMovement
+	// Movement controls --> based on processMovement (Samuel)
 	if(!player.processMovement(currentFrameTime))
 	{
 		if(keysDown[38] &&
@@ -638,7 +629,7 @@ function drawGame()
 						gameMap[toIndex(player.tileFrom[0]+1, player.tileFrom[1])]===1 && IsCollition(player.tileFrom[0]+1, player.tileFrom[1])) {
 			player.tileTo[0]+= 1;
 		}
-		//Si l'espace est appuier (loan)
+		//Si l'espace est appuyé (loan)
 		else if(keysDown[32]){
 		player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
 			keysDown[32] = false;
@@ -647,12 +638,9 @@ function drawGame()
 		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
 		{ player.timeMoved = currentFrameTime; }
 
-
 	}
 
-
-	// Define the colors/sprites of the blocks
-
+	// Define the colors/sprites of the blocks (Samuel)
 	for(var y = 0; y < mapH; ++y)
 	{
 		for(var x = 0; x < mapW; ++x)
@@ -701,10 +689,9 @@ function drawGame()
 	}
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
 
-	// Draw the sprite of the hero
+	// Draw the sprite of the hero (Samuel)
 	ctx.drawImage(imageCharacter.player, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
-	ctx.fillRect(player.position[0], player.position[1],
-							 player.dimensions[0], player.dimensions[1]);
+	ctx.fillRect(player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	//Rapheal ennemi ajouter graphiquement les ia
 
 	for(var i=0;i<enemies.length;i++){
@@ -717,12 +704,13 @@ function drawGame()
 	ctx.fillRect(ally.position[0], ally.position[1],
 		ally.dimensions[0], ally.dimensions[1]);
 
-	ctx.font = "20px Comic Sans MS";
+	ctx.font = "20px Arial";
 	ctx.textAlign = "right";
 	ctx.fillStyle = "red";
 	ctx.fillText("score : " + player.score, (tileW * mapW) - 60, 20);
 	ctx.fillStyle = "green";
 	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
+	ctx:fillText()
 	
 
 	// Background by default : red

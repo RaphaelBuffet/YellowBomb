@@ -1,5 +1,5 @@
 /*
-Maps:
+Maps (Samuel):
 0. Contour de la map
 1. Chemin parcourable
 2. Murs cassables

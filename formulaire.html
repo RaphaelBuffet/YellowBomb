@@ -48,43 +48,42 @@
         <article>
             <header>
                 <h2>Quel est votre avis sur Yellow Bomb?</h2>
-                <p>Par Samuel Pinto Da Silva le 22/05/2019 à 23:00</p>
+                <p>Par Samuel Pinto Da Silva le 23/05/2019 à 16:07</p>
             </header>
             <form id="test-form">
-                <label for="joueur">Joueur</label>
-                <input type="text" name="joueur" id="joueur"/>
 
-                <br />
-                <br />
-
-                <label for="note">Note (1 à 5):</label>
-                <select name="note" id="note">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-
-                <br />
-                <br />
-
-                <div>
-                    <div  id="commentZone">
-                        <label for="commentaire">Commentaire(s) : </label><br />
-                        <textarea name="commentaire" id="commentaire"/></textarea>
-                    </div>
-
-                    <div>
-                        <label for="recommandation">Recommandation(s) : </label><br />
-                        <textarea name="recommandation" id="recommandation"/></textarea>
-                    </div>
-                </div>
-                <br />
-
-
-                <button type="submit" id="submit-form" name="envoyer" >Envoyer</button>
-
+                <table cellspacing="10">
+                    <tr>
+                        <td class="tg-0lax" colspan="2">
+                            <label for="joueur">Joueur</label>
+                        </td>
+                        <td class="tg-0lax" colspan="2">
+                            <label for="note">Note</label>
+                            <select name="note" id="note">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-0lax" colspan="2"><input type="text" name="joueur" id="joueur"/></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-0lax" colspan="2"><label for="commentaire">Commentaire(s) : </label><br /></td>
+                        <td class="tg-0lax" colspan="2"><label for="recommandation">Recommandation(s) : </label></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-0lax" colspan="2"><textarea name="commentaire" id="commentaire" rows="5" cols="60"/></textarea></td>
+                        <td class="tg-0lax" colspan="2"><textarea name="recommandation" id="recommandation" rows="5" cols="60"/></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-0lax" colspan="4" id="buttonZone" align="right">
+                            <button type="submit" id="submit-form" name="envoyer" >Envoyer</button>
+                        </td>
+                    </tr>
+                </table>
             </form>
         </article>
     </section>
