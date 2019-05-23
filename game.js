@@ -508,24 +508,28 @@ function move() {
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
 							enemies[i].tileTo[1] -= 1;
 						}
+						else {move()}
 						break;
 					case 1:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] + 1)] === 1) {
 							enemies[i].tileTo[1] += 1;
 						}
+						else {move()}
 						break;
 					case 2:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0] - 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] -= 1;
 						}
+						else {move()}
 						break;
 					case 3:
 						if (enemies[i].tileFrom[1] > 0 &&
 							gameMap[toIndex(enemies[i].tileFrom[0] + 1, enemies[i].tileFrom[1])] === 1) {
 							enemies[i].tileTo[0] += 1;
 						}
+						else {move()}
 						break;
 				}
 				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
@@ -535,6 +539,7 @@ function move() {
 
 		}
 	}
+
 	if (ally.alive) {
 		random = Math.floor(Math.random() * 4);
 		if (!ally.processMovement(Date.now())) {
