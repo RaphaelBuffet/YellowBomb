@@ -29,3 +29,14 @@ const SPRITE = {
     explosion1:9,
     explosion2:10
 };
+
+const imageCharacter = {
+    player: new Image(),
+    ennemy: new Image(),
+    ally: new Image()
+};
+
+imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
+imageCharacter.ally.src = "game/ressources/images/ally.png";
+imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
+

@@ -18,16 +18,29 @@ results.forEach(person => {
     let name = document.createElement("td");
     let score = document.createElement("td");
     let date = document.createElement("td");
-    let country = document.createElement("td");
+    let countryFlag = document.createElement("td");
+    let countryDiv = document.createElement("div");
+    let countryName = document.createElement("div");
+    let flag = document.createElement("img");
+
+
+    //<img src="https://www.countryflags.io/:country_code/:style/:size.png">
     position.innerText = pos++;
     name.innerText = person.name;
     score.innerText = person.score;
-    country.innerText = person.country.name || "Inconnu";
+    flag.src = `https://www.countryflags.io/${person.country.code || 'EU'}/shiny/32.png`;
+    countryName.innerText = person.country.name || "Inconnu";
     date.innerText = formatDate(person.date);
+    countryDiv.style = "display:inline";
+    countryName.style = "display:inline; white-space:nowrap";
+    countryFlag.style = "white-space:nowrap";
+    countryDiv.appendChild(flag);
+    countryFlag.appendChild(countryDiv);
+    countryFlag.appendChild(countryName);
     tr.appendChild(position);
     tr.appendChild(name);
     tr.appendChild(score);
-    tr.appendChild(country);
+    tr.appendChild(countryFlag);
     tr.appendChild(date);
     scoreBoard.appendChild(tr);
 });

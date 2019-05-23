@@ -1,3 +1,5 @@
+sounds.welcome.play();
+
 class Character
 {
     constructor() {
@@ -47,11 +49,6 @@ class Ally extends Character
 	}
 }
 
-const imageCharacter = {
-    player: new Image(),
-    ennemy: new Image(),
-    ally: new Image()
-};
 
 // context (Samuel)
 var ctx = null;
@@ -64,7 +61,7 @@ barrierImage.src = "game/ressources/images/box.png";
 
 // choose of the map (Samuel)
 var gameMap = maps[0];
-
+var diff = 0;
 var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
@@ -72,11 +69,6 @@ var player = new Player();
 //tableau d'ennemi avec en parametre la position et ajout d'un allié (Raphael)
 var enemies = [new Ennemy(1,11),new Ennemy(18,11),new Ennemy(18,1)]
 var ally = new Ally();
-
-
-imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
-imageCharacter.ally.src = "game/ressources/images/ally.png";
-imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 
 
 // calcul of the FPS (calculable)
@@ -129,26 +121,40 @@ function drop(ev) {
 }
 // Drag and drop -- Fin (Samuel)
 
-playerNameSelection();
-
-if (navigator.geolocation) {
-	navigator.geolocation.getCurrentPosition((coord) =>{
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			// test du statut de retour de la requête AJAX
-			if (xhttp.readyState == 4 && (xhttp.status == 200 || xhttp.status == 0)) {
-				// on désérialise le catalogue et on le sauvegarde dans une variable
-				let country = JSON.parse(xhttp.responseText);
-				player.country.name = country.countryName;
-				player.country.code = country.countryCode;
-			}
-		};
-		xhttp.open("GET", `http://api.geonames.org/countryCodeJSON?lat=${coord.coords.latitude}&lng=${coord.coords.longitude}&username=demo`, true);
-		xhttp.send();
-	});
+function successGeoloc(coord) {
+	var xhttp = new XMLHttpRequest(); //créa une requete xml
+	xhttp.onreadystatechange = function () { //callback : quand on a un changement d'état de xhttp (quand notre requete est reçu)
+		// test du statut de retour de la requête AJAX
+		if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0)) { // 4 = requête terminée , 200 ok , 0 rien
+			let country = JSON.parse(xhttp.responseText); // Parse la réponse et la stock dans la variable
+			player.country.name = country.countryName;
+			player.country.code = country.countryCode;
+		}
+	};
+	xhttp.open("GET", `http://api.geonames.org/countryCodeJSON?lat=${coord.coords.latitude}&lng=${coord.coords.longitude}&username=demo`,
+		true); //appel d'un API qui converti latitude + longitude -> Pays
+	xhttp.send();
+}
+function failedGeoloc(){
+	player.country.name = "inconnu";
+	player.country.code = "EU";
 }
 
-// Placement of the character
+playerNameSelection();
+doGeolocalisation();
+
+//Loan , la géolocalisation
+
+function doGeolocalisation() {
+	if (navigator.geolocation) // Si le navigateur prend en compte la géolocalisation
+	{
+		navigator.geolocation.getCurrentPosition(successGeoloc, failedGeoloc); //callback une fonction qui est appeler en retour
+	} else {
+		failedGeoloc();
+	}
+}
+
+// Placement of the character (sam)
 Character.prototype.placeAt = function(x, y)
 {
 	this.tileFrom	= [x,y];
@@ -175,12 +181,12 @@ Character.prototype.processMovement = function(t)
 
 		if(this.tileTo[0] !== this.tileFrom[0])
 		{
-			var diff = (tileW / this.delayMove) * (t-this.timeMoved);
+			diff = (tileW / this.delayMove) * (t-this.timeMoved);
 			this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
 		}
 		if(this.tileTo[1] !== this.tileFrom[1])
 		{
-			var diff = (tileH / this.delayMove) * (t-this.timeMoved);
+			 diff = (tileH / this.delayMove) * (t-this.timeMoved);
 			this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
 		}
 
@@ -232,15 +238,16 @@ function gameOver(win)
     // Si on a gagné, on affiche l'écran de victoire
     if(win)
     {
-        image.src = "game/ressources/images/victoryScreen.jpg"
-        document.getElementById("game").replaceWith(image);
+        image.src = "game/ressources/images/victoryScreen.jpg";
+		sounds.win.play();
     }
     // Si on a perdu, on affiche l'écran de défaite
-    else if (!win)
+    else
     {
-        image.src = "game/ressources/images/gameoverScreen.jpg"
-        document.getElementById("game").replaceWith(image);
+        image.src = "game/ressources/images/gameoverScreen.jpg";
+		sounds.loose.play();
     }
+	document.getElementById("game").replaceWith(image);
 }
 
 //prépare l'explosion (loan)
@@ -287,6 +294,7 @@ function startExplosion(x,y) {
 		let explosionPosition = [];
 		let bombPosition = ((y * mapW) + x);
 		gameMap[bombPosition] = SPRITE.explosion0; // on remplace le sprite de la bombe par l'explosion
+		sounds.explosion.play();
 		explosionPosition.push(bombPosition); //dit qu'on a modif le terrain
 		checkPlayer(bombPosition);  //si il y a un joueur il meurt
         checkIA(bombPosition);
@@ -311,7 +319,8 @@ function startExplosion(x,y) {
 		}
 		setTimeout(function () {
 			player.bomb.number--;
-			for (let i = 0; i < explosionPosition.length; i++) {
+			for (let i = 0; i < explosionPosition.length; i++)
+			{
 				gameMap[explosionPosition[i]] = SPRITE.emptyGround; //remplace ou on a enflamé par du sol
 			}
 		}, 1000);
@@ -320,6 +329,7 @@ function startExplosion(x,y) {
 			if(player.tileFrom[1]*mapW + player.tileFrom[0] === number)
 			{
 				recordScore();
+				sounds.deathPlayer.play();
 				gameOver(false);
 			}
 		}
@@ -338,7 +348,7 @@ function startExplosion(x,y) {
 					player.score+= 73;
 					doExplosion(pos[direction], SPRITE.explosion2);
 					checkPlayer(pos[direction]);
-					checkIA(pos[direction])
+					checkIA(pos[direction]);
 					stop[direction] = true;
 				}
 				else if ((gameMap[pos[direction]] === SPRITE.emptyGround ))
@@ -347,14 +357,14 @@ function startExplosion(x,y) {
 					{
 						doExplosion(pos[direction], SPRITE.explosion2);
 						checkPlayer(pos[direction]);
-                        checkIA(pos[direction])
+                        checkIA(pos[direction]);
 						stop[direction] = true;
 					}
 					else
 					{
 						doExplosion(pos[direction], sprite);
 						checkPlayer(pos[direction]);
-                        checkIA(pos[direction])
+                        checkIA(pos[direction]);
 					}
 				}
 			}
@@ -428,8 +438,6 @@ window.onload = function()
 	});
 };
 
-
-
 // ajout des methode pour replacer les ia si il meurt en dehors de l 'écran
 Ennemy.prototype.placeAt = function(x, y)
 {
@@ -460,6 +468,7 @@ function checkEnemies(number) {
 			enemies[i].placeAt(i,0);
 			player.score+=1000;
 			enemies[i].alive=false;
+			sounds.deathEnemy.play();
 		}
 	}
 	//controle si tous les ennemi son mort fin de partie
@@ -479,6 +488,7 @@ function checkAlly(number) {
 		ally.placeAt(0,1);
 		player.score-=1500;
 		ally.alive=false;
+		sounds.deathAlly.play();
 	}
 }
 // gestion du mouvement automatique des ia aléatoire (Raphael)
@@ -529,7 +539,6 @@ function move(i) {
 					ally.alive=false;
 				}
 			}
-
 		}
 
 // gestion de l'allié par contre lui peux rester sur place (Raphael)
@@ -567,8 +576,6 @@ function move(i) {
 			}
 		}
 	}
-
-
 }
 
 //gestion des mouvement automatique doit etre mis avant le refresh de frame sinon il démarre plusieurs fois la methode
@@ -578,18 +585,18 @@ setInterval(() => {
 		for(var i=0;i<enemies.length;i++){
 			move(i);
 		}
-
 		// si l'ennemi nous asute dessus nous mourront (Raphael)
-			for(var i=0;i<enemies.length;i++){
-			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
-                    recordScore();
-                    gameOver(false);
-                }
-            }
+		for(var i=0;i<enemies.length;i++){
+			if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
+				recordScore();
+				gameOver(false);
+			}
+		}
 }, 500); //chaque demi seconde les ia bougent (Raphael)
 
 function drawGame()
 {
+
 	if(player.score<0){
 		player.score = 0;
 	}
@@ -633,7 +640,7 @@ function drawGame()
 		else if(keysDown[32]){
 		player.dropBomb(player.tileFrom[0], player.tileFrom[1]);
 			keysDown[32] = false;
-	}
+		}
 
 		if(player.tileFrom[0]!==player.tileTo[0] || player.tileFrom[1]!==player.tileTo[1])
 		{ player.timeMoved = currentFrameTime; }
@@ -692,7 +699,7 @@ function drawGame()
 	// Draw the sprite of the hero (Samuel)
 	ctx.drawImage(imageCharacter.player, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
-	//Rapheal ennemi ajouter graphiquement les ia
+	// ajouter graphiquement les ia ennemi (Rapheal)
 
 	for(var i=0;i<enemies.length;i++){
 		ctx.drawImage(imageCharacter.ennemy, enemies[i].position[0], enemies[i].position[1], enemies[i].dimensions[0], enemies[i].dimensions[1]);
@@ -710,7 +717,6 @@ function drawGame()
 	ctx.fillText("score : " + player.score, (tileW * mapW) - 60, 20);
 	ctx.fillStyle = "green";
 	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
-	ctx:fillText()
 	
 
 	// Background by default : red
