@@ -1,5 +1,6 @@
 sounds.welcome.play();
 
+//Loan création de nos personnage
 class Character
 {
     constructor() {
@@ -97,7 +98,6 @@ for(let i =0; i<childAv.length;i++){
 	child.ondragstart = drag;
 	child.draggable = true;
 }
-
 
 function drag(ev) {
 	ev.dataTransfer.setData("text", ev.target.id);
