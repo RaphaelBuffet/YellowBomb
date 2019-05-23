@@ -18,7 +18,7 @@ class Player extends Character{
         this.timeMoved = 0;
         this.position = [tileW + 10, tileH + 10];
         this.bomb = {power: 5, number: 0, maxNumber: 5}; //defini l'explosion , nbr base , nbr max
-        this.score = 0;
+        this.score = 1000;
         this.country = {};
         this.name = "";
     }
@@ -535,6 +535,11 @@ function move(i) {
 				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
 					enemies[i].timeMoved = Date.now();
 				}
+				if(enemies[i].tileFrom[1]===ally.tileFrom[1] && enemies[i].tileFrom[0]===ally.tileFrom[0]){
+					ally.placeAt(0,1);
+					player.score-=1500;
+					ally.alive=false;
+				}
 			}
 
 		}
@@ -581,6 +586,7 @@ function move(i) {
 //gestion des mouvement automatique doit etre mis avant le refresh de frame sinon il démarre plusieurs fois la methode
 
 setInterval(() => {
+	player.score-=1;
 		for(var i=0;i<enemies.length;i++){
 			move(i);
 		}
@@ -591,7 +597,7 @@ setInterval(() => {
                     gameOver(false);
                 }
             }
-}, 1500);
+}, 500);
 
 function drawGame()
 {
