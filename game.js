@@ -23,8 +23,7 @@ class Player extends Character{
         this.name = "";
     }
 }
-var random;
-
+// ennemi parametre Raphy
 class Ennemy extends Character
 {
 	constructor(positionx,positiony){
@@ -36,7 +35,7 @@ class Ennemy extends Character
 
 	}
 }
-
+// allié parametre Raphy
 class Ally extends Character
 {
 	constructor() {
@@ -70,15 +69,15 @@ var tileW = 62, tileH = 62; // cases dimensions
 var mapW = 20, mapH = 13; // map dimensions
 var player = new Player();
 
+//tableau d'ennemi avec en parametre la position et ajout d'un allié Raphy
 var enemies = [new Ennemy(1,11),new Ennemy(18,11),new Ennemy(18,1)]
-
-
 var ally = new Ally();
+
+
 imageCharacter.ennemy.src = "game/ressources/images/CRS.png";
 imageCharacter.ally.src = "game/ressources/images/ally.png";
 imageCharacter.player.src = "game/ressources/images/Punkette_jaune.png";
 
-var ennemyKilled = 0;
 
 // calcul of the FPS (calculable)
 var currentSecond= 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
@@ -281,10 +280,6 @@ function startExplosion(x,y) {
 		}
 	}
 
-
-
-
-
 	//Gestion de l'explosion (loan)
 	function explosion(x, y) {
 		let stop = {left: false, right: false, top: false, bottom: false};
@@ -390,6 +385,7 @@ function toIndex(x, y)
 {
 	return((y * mapW) + x);
 }
+// fonction qui permet de ne pas aller sur une case occuper par un ennemi empeche la mort quoi ^^ Raphy
 function IsCollition(x, y)
 {
 	for(var i=0;i<enemies.length;i++){
@@ -437,7 +433,7 @@ window.onload = function()
 
 
 
-
+// ajout des methode pour replacer les ia si il meurt en dehors de l 'écran
 Ennemy.prototype.placeAt = function(x, y)
 {
 	this.tileFrom	= [x,y];
@@ -455,17 +451,11 @@ Ally.prototype.placeAt = function(x, y)
 };
 
 function checkIA(number) {
-/*
-	tabEnnemy.forEach(ennemy=>{
-		checkCharacter(ennemy, number, 1000);
-	});
-	checkCharacter(ally, number, -1500);
-
- */
 	checkEnemies(number);
 	checkAlly(number);
 }
 
+// si l'ennemi est toucher par la bombe/explosion il meurt
 function checkEnemies(number) {
 	for (var i=0;i<enemies.length;i++){
 		if(enemies[i].tileFrom[1]*mapW + enemies[i].tileFrom[0] === number)
@@ -475,6 +465,7 @@ function checkEnemies(number) {
 			enemies[i].alive=false;
 		}
 	}
+	//controle si tous les ennemi son mort fin de partie
 	for (var i=0;i<enemies.length;i++) {
 		if(enemies[i].alive){
 			return;
@@ -484,7 +475,7 @@ function checkEnemies(number) {
 	gameOver(true); // la tu peux mettre ta fin de victoire a la place
 }
 
-
+// si l'ami est toucher par la bombe/explosion il meurt Raphy
 function checkAlly(number) {
 	if(ally.tileFrom[1]*mapW + ally.tileFrom[0] === number)
 	{
@@ -493,12 +484,10 @@ function checkAlly(number) {
 		ally.alive=false;
 	}
 }
-
+// gestion du mouvement automatique des ia aléatoire Raphy
 function move(i) {
 
 	var random;
-
-
 		random = Math.floor(Math.random() * 4);
 		if (!enemies[i].processMovement(Date.now())) {
 			if (enemies[i].alive) {
@@ -508,7 +497,7 @@ function move(i) {
 							gameMap[toIndex(enemies[i].tileFrom[0], enemies[i].tileFrom[1] - 1)] === 1) {
 							enemies[i].tileTo[1] -= 1;
 						}
-						else {move(i)}
+						else {move(i)} // si il a pas bouger il tente une autre direction Raphy
 						break;
 					case 1:
 						if (enemies[i].tileFrom[1] > 0 &&
@@ -532,9 +521,11 @@ function move(i) {
 						else {move(i)}
 						break;
 				}
+				//fait bouger graphiquement le personnage Raphy
 				if (enemies[i].tileFrom[0] !== enemies[i].tileTo[0] || enemies[i].tileFrom[1] !== enemies[i].tileTo[1]) {
 					enemies[i].timeMoved = Date.now();
 				}
+				//si il touche notre ami notre ami meurt RIP Raphy
 				if(enemies[i].tileFrom[1]===ally.tileFrom[1] && enemies[i].tileFrom[0]===ally.tileFrom[0]){
 					ally.placeAt(0,1);
 					player.score-=1500;
@@ -544,7 +535,7 @@ function move(i) {
 
 		}
 
-
+// gestion de l'allié par contre lui peux rester sur place Raphy
 	if (ally.alive && i===2) {
 		random = Math.floor(Math.random() * 4);
 		if (!ally.processMovement(Date.now())) {
@@ -591,13 +582,14 @@ setInterval(() => {
 			move(i);
 		}
 
+		// si l'ennemi nous asute dessus nous mourront Raphy
 			for(var i=0;i<enemies.length;i++){
 			    if(enemies[i].tileFrom[0]===player.tileFrom[0] && enemies[i].tileFrom[1]===player.tileFrom[1]){
                     recordScore();
                     gameOver(false);
                 }
             }
-}, 500);
+}, 500); //chaque demi seconde les ia bouges Raphy
 
 function drawGame()
 {
@@ -713,7 +705,7 @@ function drawGame()
 	ctx.drawImage(imageCharacter.player, player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
 	ctx.fillRect(player.position[0], player.position[1],
 							 player.dimensions[0], player.dimensions[1]);
-	//Rapheal ennemi
+	//Rapheal ennemi ajouter graphiquement les ia
 
 	for(var i=0;i<enemies.length;i++){
 		ctx.drawImage(imageCharacter.ennemy, enemies[i].position[0], enemies[i].position[1], enemies[i].dimensions[0], enemies[i].dimensions[1]);
@@ -731,9 +723,7 @@ function drawGame()
 	ctx.fillText("score : " + player.score, (tileW * mapW) - 60, 20);
 	ctx.fillStyle = "green";
 	ctx.fillText("Name : " + player.name, 130 + player.name.length * 11.3, 20);
-
-
-	//fin raphi
+	
 
 	// Background by default : red
 
